@@ -31,6 +31,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // Variable para el título de la AppBar
   String _titulo = "Hola, Flutter";
+  // Contador adicional para demostración
+  int _counter = 0;
 
   // Método para cambiar el título de la AppBar
   void _cambiarTitulo() {
@@ -51,6 +53,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Metodo para incrementar el contador
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
+
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -74,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             const SizedBox(height: 20),
-            // Container con imágenes
+            // Container con bordes al redor de las imágenes
             Container(
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
@@ -142,6 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             const SizedBox(height: 20),
+
             // Botón principal para cambiar el título
             ElevatedButton(
               onPressed: _cambiarTitulo,
@@ -155,6 +166,41 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               child: const Text("Cambiar título de la AppBar"),
             ),
+
+            const SizedBox(height: 20),
+
+            // Contador con OutlinedButton
+            Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                border: Border.all(color: Colors.blue),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    "Contador de clics:",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    '$_counter',
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  OutlinedButton(
+                    onPressed: _incrementCounter,
+                    child: const Text("Incrementar contador"),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
           ],
         ),
       ),
