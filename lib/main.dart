@@ -257,6 +257,24 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
               const SizedBox(height: 20),
+
+              // Widget adicional: Botón con icono
+              ElevatedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Botón con icono presionado"),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.add),
+                label: const Text("Añadir nuevo elemento"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
+              ),
             ],
           ),
         ),
