@@ -2,7 +2,6 @@ import 'package:go_router/go_router.dart';
 import '../view/home/home_screen.dart';
 import '../view/paso_parametros/paso_parametros_screen.dart';
 import '../view/paso_parametros/detalle_screen.dart';
-// Si tienes ciclo de vida, también:
 import '../view/ciclo_vida/ciclo_vida_screen.dart';
 
 final GoRouter appRouter = GoRouter(
