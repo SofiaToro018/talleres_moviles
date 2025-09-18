@@ -72,7 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -278,7 +277,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
