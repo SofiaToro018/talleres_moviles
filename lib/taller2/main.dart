@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:parqueadero_2025_g2/routes/app_router.dart';
-import 'themes/app_theme.dart'; // Importa el tema
+import '../routes/app_router.dart';
+import '../themes/app_theme.dart'; // Importa el tema
 
 void main() {
   runApp(const MyApp());
