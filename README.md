@@ -30,7 +30,7 @@ Aplicación Flutter desarrollada como taller práctico que demuestra el uso de w
 ![Contador y Lista](image-3.png)
 ![Lista y Boton agregar](image-4.png)
 
-# Taller2
+# Taller2 - Navegación, widgets y ciclo de vida en Flutter
 
 ## Datos del Estudiante
 - **Nombre:** Laura Sofía Toro Garcia
@@ -73,10 +73,10 @@ Cada navegación envía un parámetro que se recibe en la pantalla de detalle, m
 
 En la pantalla de Ciclo de Vida se evidencian los principales métodos:
 - **initState():** inicialización del widget.
-- didChangeDependencies(): se ejecuta al cambiar dependencias del contexto.
-build(): construye la interfaz y se actualiza en cada setState().
-setState(): notifica cambios y reconstruye la UI.
-dispose(): se ejecuta al destruir el widget.
+- didChangeDependencies():** se ejecuta al cambiar dependencias del contexto.
+- **build():** construye la interfaz y se actualiza en cada setState().
+- **setState():** notifica cambios y reconstruye la UI.
+- **dispose():** se ejecuta al destruir el widget.
 # Esto permite visualizar en consola la secuencia real del ciclo de vida:
 
 initState() → didChangeDependencies() → build() (entrada)
