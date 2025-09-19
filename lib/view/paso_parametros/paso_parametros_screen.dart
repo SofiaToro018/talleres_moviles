@@ -4,26 +4,37 @@ import '../../widgets/custom_drawer.dart';
 
 /// PasoParametrosScreen - Pantalla para ingresar y enviar parámetros
 /// Permite ingresar un valor y enviarlo a DetalleScreen usando go, push y replace.
+/// Metodos de navegación disponibles:
+/// *- go: Reemplaza toda la navegación anterior.
+/// *- push: Agrega una nueva pantalla encima de la actual.
+/// *- replace: Reemplaza la pantalla actual en la pila de navegación.
+
 class PasoParametrosScreen extends StatefulWidget {
   const PasoParametrosScreen({super.key});
 
   @override
-  State<PasoParametrosScreen> createState() => _PasoParametrosScreenState();
+  State<PasoParametrosScreen> createState() => PasoParametrosScreenState();
 }
 
-class _PasoParametrosScreenState extends State<PasoParametrosScreen> {
+class PasoParametrosScreenState extends State<PasoParametrosScreen> {
+  /// Controlador para capturar el texto ingresado en el TextField
+  /// *se utiliza textEditingController para poder capturar el valor del campo de texto
   final TextEditingController controller = TextEditingController();
-
   @override
   void dispose() {
-    controller.dispose();
+    controller.dispose(); // Liberamos la memoria del controlador
+    // el metodo super.dispose() se encarga de liberar la memoria de los recursos utilizados por el widget
     super.dispose();
   }
 
-  /// Navega a DetalleScreen usando el método indicado
+  /// !goToDetalle
+  /// recibe el tipo de navegación (go, push, replace)
+  /// y redirige a la pantalla de detalle con el valor ingresado.
   void goToDetalle(String metodo) {
-    String valor = controller.text;
-    if (valor.isEmpty) return;
+    String valor = controller.text; // Capturamos el valor del campo de texto
+
+    if (valor.isEmpty) return; // Si el campo está vacio, no hacemos nada
+
     switch (metodo) {
       case 'go':
         context.go('/detalle/$valor/$metodo');
@@ -38,6 +49,7 @@ class _PasoParametrosScreenState extends State<PasoParametrosScreen> {
   }
 
   @override
+  // *build es un metodo que retorna un widget
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Paso de Parámetros')),
@@ -48,23 +60,32 @@ class _PasoParametrosScreenState extends State<PasoParametrosScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
+              //*asignamos el controlador al campo de texto
               controller: controller,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Ingrese un valor',
               ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => goToDetalle('go'),
-              child: const Text('Ir con Go'),
+
+            SizedBox(
+              width: 150.0,
+              height: 100.0,
+              child: ElevatedButton(
+                onPressed: () => goToDetalle('go'),
+                child: const Text('Ir con Go'),
+              ),
             ),
+
             const SizedBox(height: 10),
+
             ElevatedButton(
               onPressed: () => goToDetalle('push'),
               child: const Text('Ir con Push'),
             ),
+
             const SizedBox(height: 10),
+
             ElevatedButton(
               onPressed: () => goToDetalle('replace'),
               child: const Text('Ir con Replace'),

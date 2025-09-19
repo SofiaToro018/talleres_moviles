@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
-import '../view/home/home_screen.dart';
+import '../widgets/tabbar.dart';
 import '../view/paso_parametros/paso_parametros_screen.dart';
 import '../view/paso_parametros/detalle_screen.dart';
 import '../view/ciclo_vida/ciclo_vida_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
+    GoRoute(path: '/', builder: (context, state) => const TabBarWidget()),
     GoRoute(
       path: '/paso_parametros',
       name: 'paso_parametros',
