@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../widgets/custom_drawer.dart';
 
 /// PasoParametrosScreen - Pantalla para ingresar y enviar parámetros
 /// Permite ingresar un valor y enviarlo a DetalleScreen usando go, push y replace.
@@ -13,28 +12,22 @@ class PasoParametrosScreen extends StatefulWidget {
   const PasoParametrosScreen({super.key});
 
   @override
-  State<PasoParametrosScreen> createState() => PasoParametrosScreenState();
+  State<PasoParametrosScreen> createState() => _PasoParametrosScreenState();
 }
 
-class PasoParametrosScreenState extends State<PasoParametrosScreen> {
-  /// Controlador para capturar el texto ingresado en el TextField
-  /// *se utiliza textEditingController para poder capturar el valor del campo de texto
+class _PasoParametrosScreenState extends State<PasoParametrosScreen> {
   final TextEditingController controller = TextEditingController();
+
   @override
   void dispose() {
-    controller.dispose(); // Liberamos la memoria del controlador
-    // el metodo super.dispose() se encarga de liberar la memoria de los recursos utilizados por el widget
+    controller.dispose();
     super.dispose();
   }
 
-  /// !goToDetalle
-  /// recibe el tipo de navegación (go, push, replace)
-  /// y redirige a la pantalla de detalle con el valor ingresado.
+  /// Navega a DetalleScreen usando el método indicado y muestra SnackBar de confirmación
   void goToDetalle(String metodo) {
-    String valor = controller.text; // Capturamos el valor del campo de texto
-
-    if (valor.isEmpty) return; // Si el campo está vacio, no hacemos nada
-
+    String valor = controller.text;
+    if (valor.isEmpty) return;
     switch (metodo) {
       case 'go':
         context.go('/detalle/$valor/$metodo');
@@ -46,52 +39,66 @@ class PasoParametrosScreenState extends State<PasoParametrosScreen> {
         context.replace('/detalle/$valor/$metodo');
         break;
     }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Parámetro enviado: $valor'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.purple[200],
+      ),
+    );
+  }
+
+  /// Limpia el campo de texto y muestra SnackBar de confirmación
+  void limpiarCampo() {
+    controller.clear();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Campo limpiado'),
+        duration: Duration(seconds: 1),
+        backgroundColor: Colors.purple,
+      ),
+    );
   }
 
   @override
-  // *build es un metodo que retorna un widget
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Paso de Parámetros')),
-      drawer: const CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              //*asignamos el controlador al campo de texto
               controller: controller,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Ingrese un valor',
               ),
             ),
-
-            SizedBox(
-              width: 150.0,
-              height: 100.0,
-              child: ElevatedButton(
-                onPressed: () => goToDetalle('go'),
-                child: const Text('Ir con Go'),
-              ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => goToDetalle('go'),
+              child: const Text('Ir con Go'),
             ),
-
             const SizedBox(height: 10),
-
             ElevatedButton(
               onPressed: () => goToDetalle('push'),
               child: const Text('Ir con Push'),
             ),
-
             const SizedBox(height: 10),
-
             ElevatedButton(
               onPressed: () => goToDetalle('replace'),
               child: const Text('Ir con Replace'),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: limpiarCampo,
+        backgroundColor: Colors.purple,
+        child: const Icon(Icons.cleaning_services),
+        tooltip: 'Limpiar campo',
       ),
     );
   }

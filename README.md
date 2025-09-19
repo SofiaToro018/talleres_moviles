@@ -30,3 +30,39 @@ Aplicación Flutter desarrollada como taller práctico que demuestra el uso de w
 ![Contador y Lista](image-3.png)
 ![Lista y Boton agregar](image-4.png)
 
+# Taller2
+
+## Datos del Estudiante
+- **Nombre:** Laura Sofía Toro Garcia
+- **Código:** [230222021]
+
+Este taller lo realicé siguiendo el ejemplo visto en clase sobre navegación y paso de parámetros con go_router, adaptando la estructura y los widgets para cumplir los requisitos y mejorar la experiencia de usuario. Me apoyé en las explicaciones del docente y la documentación oficial de Flutter para asegurar buenas prácticas en la arquitectura y el manejo de rutas.
+
+# Arquitectura y navegación
+Mi aplicación utiliza el paquete go_router para gestionar la navegación entre pantallas. Defino las rutas principales en el archivo `app_router.dart`:
+
+- `/` : Pantalla principal con menú TabBar.
+- `/paso_parametros` : Pantalla donde ingreso un valor y elijo el método de navegación.
+- `/detalle/:parametro/:metodo` : Pantalla que recibe el parámetro y el método, mostrando ambos y permitiendo regresar.
+- `/ciclo_vida` : Pantalla para demostrar el ciclo de vida de un StatefulWidget.
+
+Para enviar parámetros, desde la pantalla principal uso:
+```dart
+context.go('/detalle/valor/metodo');
+context.push('/detalle/valor/metodo');
+context.replace('/detalle/valor/metodo');
+```
+En la pantalla de detalle los recibo y los muestro. El botón “Volver” demuestra la diferencia entre los métodos: con `push` puedo regresar con “atrás”, con `go` y `replace` no.
+
+También uso navegación en el TabBar, Drawer y GridView para moverse entre las secciones principales.
+
+# Widgets usados y razón de su elección
+- **TextField:** Para ingresar valores y demostrar el paso de parámetros.
+- **ElevatedButton:** Para acciones principales como navegar y actualizar datos.
+- **FloatingActionButton:** Para limpiar el campo de texto de forma rápida.
+- **SnackBar:** Para dar retroalimentación visual al usuario.
+- **TabBar:** Como menú principal, facilita la navegación entre secciones.
+- **GridView:** Para mostrar opciones de navegación de forma visual y ordenada.
+- **Drawer:** (opcional) Para navegación lateral, aunque el menú principal es el TabBar.
+
+Elegí estos widgets porque son los más usados en apps reales y permiten demostrar tanto la navegación como la interacción y el manejo de estado en Flutter.

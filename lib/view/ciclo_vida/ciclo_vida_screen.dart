@@ -16,7 +16,8 @@ class CicloVidaScreen extends StatefulWidget {
 class CicloVidaScreenState extends State<CicloVidaScreen> {
   String texto = "texto inicial 🟢";
 
-  /// Se ejecuta una vez cuando la pantalla es creada.
+  // Se ejecuta una vez cuando el widget es insertado en el árbol.
+  // Ideal para inicializar datos o suscripciones.
   @override
   void initState() {
     super.initState();
@@ -25,24 +26,23 @@ class CicloVidaScreenState extends State<CicloVidaScreen> {
     }
   }
 
-  /// !didChangeDependencies se ejecuta cada vez que las dependencias del widget cambian
-  ///
+  // Se ejecuta cada vez que cambian las dependencias del widget (por ejemplo, el tema).
+  // Útil para obtener datos de InheritedWidget o dependencias externas.
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     if (kDebugMode) {
       print("🟡 didChangeDependencies() -> Tema actual");
     }
   }
 
-  /// Se ejecuta cada vez que el widget es reconstruido.
+  // Se ejecuta cada vez que el widget necesita ser reconstruido (por cambios de estado).
+  // Aquí se define la interfaz visual.
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
       print("🔵 build() -> Construyendo la pantalla");
     }
-
     return BaseView(
       title: "Ciclo de Vida de en flutter uceva",
       body: Center(
@@ -61,7 +61,8 @@ class CicloVidaScreenState extends State<CicloVidaScreen> {
     );
   }
 
-  //actualiza el texto y lo muestra en la pantalla
+  // Actualiza el texto y llama a setState para reconstruir el widget.
+  // Se usa para modificar el estado y reflejar cambios en pantalla.
   void actualizarTexto() {
     setState(() {
       texto = "Texto actualizado 🟠";
@@ -71,7 +72,8 @@ class CicloVidaScreenState extends State<CicloVidaScreen> {
     });
   }
 
-  /// Se ejecuta cuando el widget es eliminado de la memoria.
+  // Se ejecuta cuando el widget es removido del árbol y destruido.
+  // Ideal para liberar recursos, cancelar suscripciones, etc.
   @override
   void dispose() {
     if (kDebugMode) {
