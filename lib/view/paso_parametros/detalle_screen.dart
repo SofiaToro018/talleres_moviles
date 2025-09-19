@@ -23,29 +23,42 @@ class DetalleScreen extends StatelessWidget {
   // *void es un metodo que no retorna nada
   void _volverAtras(BuildContext context) {
     if (metodoNavegacion == 'push') {
-      context
-          .pop(); // Si la pantalla fue abierta con 'push', podemos regresar con pop()
+      // push() mantiene el stack → se puede regresar con pop()
+      context.pop();
     } else {
-      context.go(
-        '/paso_parametros',
-      ); // Si fue con 'go' o 'replace', redirigimos manualmente
+      // go() y replace() destruyen la ruta previa → redirigimos manualmente
+      context.go('/');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Perfil')),
+      appBar: AppBar(title: const Text('Detalle')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Parámetro recibido: $parametro',
-              style: const TextStyle(fontSize: 20),
+            Hero(
+              tag: parametro, // 👈 mismo tag que en Home
+              child: Material(
+                color: Colors.transparent,
+                child: Text(
+                  parametro,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 142, 97, 225),
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(height: 20), // Espaciado entre elementos
-
+            const SizedBox(height: 10),
+            Text(
+              "Método usado: $metodoNavegacion",
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () => _volverAtras(context),
               child: const Text("Volver"),

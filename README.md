@@ -39,30 +39,46 @@ Aplicación Flutter desarrollada como taller práctico que demuestra el uso de w
 Este taller lo realicé siguiendo el ejemplo visto en clase sobre navegación y paso de parámetros con go_router, adaptando la estructura y los widgets para cumplir los requisitos y mejorar la experiencia de usuario. Me apoyé en las explicaciones del docente y la documentación oficial de Flutter para asegurar buenas prácticas en la arquitectura y el manejo de rutas.
 
 # Arquitectura y navegación
-Mi aplicación utiliza el paquete go_router para gestionar la navegación entre pantallas. Defino las rutas principales en el archivo `app_router.dart`:
+La aplicación utiliza go_router para gestionar las rutas y la navegación entre pantallas. Se definieron las siguientes rutas principales:
 
-- `/` : Pantalla principal con menú TabBar.
-- `/paso_parametros` : Pantalla donde ingreso un valor y elijo el método de navegación.
-- `/detalle/:parametro/:metodo` : Pantalla que recibe el parámetro y el método, mostrando ambos y permitiendo regresar.
-- `/ciclo_vida` : Pantalla para demostrar el ciclo de vida de un StatefulWidget.
+- **Ruta raíz:** carga el TabBar con las tres secciones principales (Home, Parámetros y Ciclo de Vida).
 
-Para enviar parámetros, desde la pantalla principal uso:
-```dart
-context.go('/detalle/valor/metodo');
-context.push('/detalle/valor/metodo');
-context.replace('/detalle/valor/metodo');
-```
-En la pantalla de detalle los recibo y los muestro. El botón “Volver” demuestra la diferencia entre los métodos: con `push` puedo regresar con “atrás”, con `go` y `replace` no.
+- **Ruta de detalle:** recibe parámetros enviados desde la pantalla Home y muestra el método de navegación utilizado.
 
-También uso navegación en el TabBar, Drawer y GridView para moverse entre las secciones principales.
+- **Ruta de ciclo de vida:** Permite observar la ejecución de los principales métodos del ciclo de vida de un StatefulWidget.
 
-# Widgets usados y razón de su elección
-- **TextField:** Para ingresar valores y demostrar el paso de parámetros.
-- **ElevatedButton:** Para acciones principales como navegar y actualizar datos.
-- **FloatingActionButton:** Para limpiar el campo de texto de forma rápida.
-- **SnackBar:** Para dar retroalimentación visual al usuario.
-- **TabBar:** Como menú principal, facilita la navegación entre secciones.
-- **GridView:** Para mostrar opciones de navegación de forma visual y ordenada.
-- **Drawer:** (opcional) Para navegación lateral, aunque el menú principal es el TabBar.
+# Métodos de navegación implementados:
 
-Elegí estos widgets porque son los más usados en apps reales y permiten demostrar tanto la navegación como la interacción y el manejo de estado en Flutter.
+go() → reemplaza toda la pila de navegación (no se puede regresar con el botón de retroceso).
+
+push() → apila una nueva pantalla sobre la actual (permite regresar).
+
+replace() → sustituye la pantalla actual (se puede volver, pero sin conservar la reemplazada).
+
+Cada navegación envía un parámetro que se recibe en la pantalla de detalle, mostrando al usuario qué valor se pasó y qué comportamiento tuvo según el método de navegación.
+
+# Widgets Usados y Justificación
+
+- **GridView:** organiza elementos en cuadrícula en la pantalla Home. Es ideal para mostrar varias opciones de navegación de forma visual y ordenada.
+
+- **TabBar y TabBarView:** permiten estructurar la app en tres secciones principales, facilitando un flujo claro sin necesidad de abrir nuevas pantallas.
+
+- **FloatingActionButton + SnackBar:** en la sección de Parámetros, el FAB limpia el campo de texto y el SnackBar confirma la acción, mejorando la experiencia de usuario.
+
+- **Drawer (Menú lateral personalizado):** ofrece otra forma de navegación rápida hacia las secciones principales.
+
+- **Hero Animation:** aporta dinamismo al transformar una tarjeta del Home en el título de la pantalla de detalle mediante animación.
+
+# Ciclo de Vida (StatefulWidget)
+
+En la pantalla de Ciclo de Vida se evidencian los principales métodos:
+- **initState():** inicialización del widget.
+- didChangeDependencies(): se ejecuta al cambiar dependencias del contexto.
+build(): construye la interfaz y se actualiza en cada setState().
+setState(): notifica cambios y reconstruye la UI.
+dispose(): se ejecuta al destruir el widget.
+# Esto permite visualizar en consola la secuencia real del ciclo de vida:
+
+initState() → didChangeDependencies() → build() (entrada)
+setState() → build() (interacciones)
+dispose() (salida)

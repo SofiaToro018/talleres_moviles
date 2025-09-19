@@ -14,7 +14,6 @@ class HomeScreen extends StatelessWidget {
       {'label': 'Navegar con Replace', 'param': 'Item 3', 'method': 'replace'},
     ];
     return Scaffold(
-      appBar: AppBar(title: const Text("Home - Taller 2")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -35,11 +34,10 @@ class HomeScreen extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final item = items[index];
+                  final param = item['param']!;
+                  final method = item['method']!;
                   return GestureDetector(
                     onTap: () {
-                      final param = item['param']!;
-                      final method = item['method']!;
-
                       // Selecciona método de navegación según el item
                       if (method == 'go') {
                         context.go('/detalle/$param/$method');
@@ -55,14 +53,25 @@ class HomeScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Center(
-                        child: Text(
-                          item['label']!,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                      child: Hero(
+                        tag:
+                            param, // 👈 Hero usa el parámetro como identificador único
+                        child: Card(
+                          color: const Color.fromARGB(255, 142, 97, 225),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          textAlign: TextAlign.center,
+                          child: Center(
+                            child: Text(
+                              item['label']!,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
                       ),
                     ),
