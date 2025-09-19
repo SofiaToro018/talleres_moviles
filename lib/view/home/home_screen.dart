@@ -7,20 +7,21 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Lista de elementos para el GridView
+    // Ítems que enviarán un parámetro y usarán distintos métodos de navegación
     final List<Map<String, String>> items = [
-      {'label': 'Métodos de Navegación', 'route': '/paso_parametros'},
-      {'label': 'Ciclo de Vida', 'route': '/ciclo_vida'},
+      {'label': 'Navegar con Go', 'param': 'Item 1', 'method': 'go'},
+      {'label': 'Navegar con Push', 'param': 'Item 2', 'method': 'push'},
+      {'label': 'Navegar con Replace', 'param': 'Item 3', 'method': 'replace'},
     ];
-
     return Scaffold(
+      appBar: AppBar(title: const Text("Home - Taller 2")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             const Text(
               'Bienvenido al Dashboard del Taller 2',
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
             Expanded(
@@ -28,7 +29,7 @@ class HomeScreen extends StatelessWidget {
                 itemCount: items.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 2,
+                  childAspectRatio: 1.2,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
@@ -36,11 +37,34 @@ class HomeScreen extends StatelessWidget {
                   final item = items[index];
                   return GestureDetector(
                     onTap: () {
-                      context.go(item['route']!);
+                      final param = item['param']!;
+                      final method = item['method']!;
+
+                      // Selecciona método de navegación según el item
+                      if (method == 'go') {
+                        context.go('/detalle/$param/$method');
+                      } else if (method == 'push') {
+                        context.push('/detalle/$param/$method');
+                      } else {
+                        context.replace('/detalle/$param/$method');
+                      }
                     },
                     child: Card(
                       color: AppTheme.cardColor,
-                      child: Center(child: Text(item['label']!)),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Text(
+                          item['label']!,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                   );
                 },
