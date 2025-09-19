@@ -63,12 +63,16 @@ class _PasoParametrosScreenState extends State<PasoParametrosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Paso de Parámetros')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text(
+              'Ingrese un valor para enviar a DetalleScreen:',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
             TextField(
               controller: controller,
               decoration: const InputDecoration(
