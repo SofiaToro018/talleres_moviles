@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../themes/app_theme.dart';
 import '../../widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {

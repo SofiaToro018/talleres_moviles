@@ -1,8 +1,11 @@
 import 'package:go_router/go_router.dart';
-import '../widgets/tabbar.dart';
 import '../view/paso_parametros/detalle_screen.dart';
 import '../view/ciclo_vida/ciclo_vida_screen.dart';
+import '../view/paso_parametros/paso_parametros_screen.dart';
+
 import '../view/home/home_screen.dart';
+import '../view/future/future_view.dart';
+import '../view/isolate/isolate_view.dart';
 
 final GoRouter appRouter = GoRouter(
   routes: [
