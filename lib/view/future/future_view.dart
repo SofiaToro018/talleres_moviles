@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:talleres_moviles/widgets/base_drawer.dart';
 
 class FutureView extends StatefulWidget {
   const FutureView({super.key});
@@ -10,8 +11,8 @@ class FutureView extends StatefulWidget {
 class _FutureViewState extends State<FutureView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Future / async-await')),
+    return BaseView(
+      title: 'Future / async-await',
       body: const Center(
         child: Text(
           'Aquí va el contenido de Future / async-await',

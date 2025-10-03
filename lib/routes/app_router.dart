@@ -6,6 +6,7 @@ import '../view/paso_parametros/paso_parametros_screen.dart';
 import '../view/home/home_screen.dart';
 import '../view/future/future_view.dart';
 import '../view/isolate/isolate_view.dart';
+import '../view/timer/timer_view.dart';
 
 final GoRouter appRouter = GoRouter(
   routes: [
@@ -49,6 +50,12 @@ final GoRouter appRouter = GoRouter(
       path: '/isolate',
       name: 'isolate',
       builder: (context, state) => const IsolateView(),
+    ),
+    //!Ruta para TIMER
+    GoRoute(
+      path: '/timer',
+      name: 'timer',
+      builder: (context, state) => const TimerView(),
     ),
   ],
 );

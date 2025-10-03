@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:talleres_moviles/widgets/base_drawer.dart';
 
-class IsolateView extends StatefulWidget {
-  const IsolateView({super.key});
+class TimerView extends StatefulWidget {
+  const TimerView({super.key});
 
   @override
-  State<IsolateView> createState() => _IsolateViewState();
+  State<TimerView> createState() => _TimerViewState();
 }
 
-class _IsolateViewState extends State<IsolateView> {
+class _TimerViewState extends State<TimerView> {
   @override
   Widget build(BuildContext context) {
     return BaseView(
-      title: 'Isolate Tarea Pesada',
+      title: 'Timer',
       body: const Center(
         child: Text(
-          'Aquí va el contenido de Isolate Tarea Pesada',
+          'Aquí va el contenido del Timer',
           style: TextStyle(fontSize: 18),
         ),
       ),
