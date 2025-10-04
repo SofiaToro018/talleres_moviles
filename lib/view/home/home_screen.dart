@@ -8,64 +8,97 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const CustomDrawer(), // tu menú lateral
-      appBar: AppBar(
-        title: const Text(
-          'Laboratorio de Concurrencia',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: AppTheme.primaryColor,
-        foregroundColor: Colors.white,
-        elevation: 4,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
-              Text(
-                'Selecciona una demostración para comenzar:',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
-              ),
-              const SizedBox(height: 24),
-
-              // Tarjetas principales (Future, Isolate, Timer)
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: [
-                  _buildFeatureCard(
-                    context,
-                    title: 'Future',
-                    description:
-                        'Ejemplo de asincronía con Future / async / await.',
-                    icon: Icons.bolt_outlined,
-                    routeName: '/future',
-                  ),
-                  _buildFeatureCard(
-                    context,
-                    title: 'Isolate',
-                    description: 'Procesamiento en segundo plano con Isolate.',
-                    icon: Icons.memory_outlined,
-                    routeName: '/isolate',
-                  ),
-                  _buildFeatureCard(
-                    context,
-                    title: 'Timer',
-                    description: 'Control de tiempo y cronómetro con Timer.',
-                    icon: Icons.timer_outlined,
-                    routeName: '/timer',
-                  ),
-                ],
+      drawer: const CustomDrawer(),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppTheme.primaryColor.withOpacity(0.95),
+                AppTheme.secondaryColor.withOpacity(0.9),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.primaryColor.withOpacity(0.4),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
               ),
             ],
+          ),
+          child: AppBar(
+            title: const Text(
+              'Laboratorio de Concurrencia',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: const IconThemeData(color: Colors.white),
+          ),
+        ),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, AppTheme.secondaryColor.withOpacity(0.08)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 16),
+                Text(
+                  'Selecciona una demostración para comenzar:',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+                ),
+                const SizedBox(height: 24),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  children: [
+                    _buildFeatureCard(
+                      context,
+                      title: 'Future',
+                      description:
+                          'Ejemplo de asincronía con Future / async / await.',
+                      icon: Icons.bolt_outlined,
+                      routeName: '/future',
+                    ),
+                    _buildFeatureCard(
+                      context,
+                      title: 'Isolate',
+                      description:
+                          'Procesamiento en segundo plano con Isolate.',
+                      icon: Icons.memory_outlined,
+                      routeName: '/isolate',
+                    ),
+                    _buildFeatureCard(
+                      context,
+                      title: 'Timer',
+                      description: 'Control de tiempo y cronómetro con Timer.',
+                      icon: Icons.timer_outlined,
+                      routeName: '/timer',
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -87,8 +120,8 @@ class HomeScreen extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppTheme.primaryColor.withOpacity(0.9),
-              AppTheme.secondaryColor.withOpacity(0.8),
+              AppTheme.primaryColor.withOpacity(0.95),
+              AppTheme.secondaryColor.withOpacity(0.85),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
