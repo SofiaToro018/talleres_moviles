@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:talleres_moviles/themes/app_theme.dart';
 import '../../widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -7,25 +8,123 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Taller Segundo Plano')),
-      drawer: const CustomDrawer(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/future'),
-              child: const Text("Future / async-await"),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/timer'),
-              child: const Text("Cronómetro"),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/isolate'),
-              child: const Text("Isolate Tarea Pesada"),
+      drawer: const CustomDrawer(), // tu menú lateral
+      appBar: AppBar(
+        title: const Text(
+          'Laboratorio de Concurrencia',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: AppTheme.primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 4,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
+              Text(
+                'Selecciona una demostración para comenzar:',
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+              ),
+              const SizedBox(height: 24),
+
+              // Tarjetas principales (Future, Isolate, Timer)
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: [
+                  _buildFeatureCard(
+                    context,
+                    title: 'Future',
+                    description:
+                        'Ejemplo de asincronía con Future / async / await.',
+                    icon: Icons.bolt_outlined,
+                    routeName: '/future',
+                  ),
+                  _buildFeatureCard(
+                    context,
+                    title: 'Isolate',
+                    description: 'Procesamiento en segundo plano con Isolate.',
+                    icon: Icons.memory_outlined,
+                    routeName: '/isolate',
+                  ),
+                  _buildFeatureCard(
+                    context,
+                    title: 'Timer',
+                    description: 'Control de tiempo y cronómetro con Timer.',
+                    icon: Icons.timer_outlined,
+                    routeName: '/timer',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard(
+    BuildContext context, {
+    required String title,
+    required String description,
+    required IconData icon,
+    required String routeName,
+  }) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, routeName),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppTheme.primaryColor.withOpacity(0.9),
+              AppTheme.secondaryColor.withOpacity(0.8),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primaryColor.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 46, color: Colors.white),
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 13, color: Colors.white70),
+              ),
+            ],
+          ),
         ),
       ),
     );
