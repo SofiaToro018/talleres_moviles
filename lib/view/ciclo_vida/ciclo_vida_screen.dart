@@ -37,6 +37,18 @@ class CicloVidaScreenState extends State<CicloVidaScreen> {
     }
     return BaseView(
       title: "Ciclo de Vida de en flutter uceva",
+      appBar: AppBar(
+        title: const Text('Ciclo de Vida de en flutter uceva'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF6A0DAD), Color(0xFF9C27B0), Color(0xFFE1BEE7)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

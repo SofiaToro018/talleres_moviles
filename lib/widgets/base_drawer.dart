@@ -5,7 +5,12 @@ class BaseView extends StatelessWidget {
   final String title;
   final Widget body;
 
-  const BaseView({super.key, required this.title, required this.body});
+  const BaseView({
+    super.key,
+    required this.title,
+    required this.body,
+    required AppBar appBar,
+  });
 
   @override
   Widget build(BuildContext context) {

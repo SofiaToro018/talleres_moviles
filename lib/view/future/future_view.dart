@@ -14,9 +14,9 @@ class _FutureViewState extends State<FutureView> {
 
   // 1. Servicio simulado con Future.delayed
   Future<List<String>> _fakeFetchData() async {
-    print("Antes de la consulta");
+    print("⏳ Antes de la consulta");
     await Future.delayed(const Duration(seconds: 3), () {
-      print("Durante la consulta");
+      print("🔄 Durante la consulta");
     });
 
     // Simulamos datos que se obtendrían de un servidor
@@ -48,13 +48,25 @@ class _FutureViewState extends State<FutureView> {
       });
     }
 
-    print("Después de la consulta");
+    print("✅ Después de la consulta");
   }
 
   @override
   Widget build(BuildContext context) {
     return BaseView(
       title: 'Future / async-await',
+      appBar: AppBar(
+        title: const Text('Future / async-await'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF6A0DAD), Color(0xFF9C27B0), Color(0xFFE1BEE7)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

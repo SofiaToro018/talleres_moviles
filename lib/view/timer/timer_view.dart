@@ -24,7 +24,7 @@ class _TimerViewState extends State<TimerView> {
   void _startTimer() {
     if (!canStart) return;
     setState(() => _isRunning = true);
-    print("Cronómetro iniciado");
+    print("⏱️ Cronómetro iniciado");
     _timer = Timer.periodic(const Duration(milliseconds: 100), (_) {
       setState(() => _milliseconds += 100);
     });
@@ -34,13 +34,13 @@ class _TimerViewState extends State<TimerView> {
     if (!canPause) return;
     _timer?.cancel();
     setState(() => _isRunning = false);
-    print("Cronómetro pausado");
+    print("⏸️ Cronómetro pausado");
   }
 
   void _resumeTimer() {
     if (!canResume) return;
     setState(() => _isRunning = true);
-    print("Cronómetro reanudado");
+    print("▶️ Cronómetro reanudado");
     _timer = Timer.periodic(const Duration(milliseconds: 100), (_) {
       setState(() => _milliseconds += 100);
     });
@@ -53,7 +53,7 @@ class _TimerViewState extends State<TimerView> {
       _isRunning = false;
       _milliseconds = 0;
     });
-    print("Cronómetro reiniciado");
+    print("🔄 Cronómetro reiniciado");
   }
 
   String _formatTime(int milliseconds) {
@@ -69,7 +69,7 @@ class _TimerViewState extends State<TimerView> {
   @override
   void dispose() {
     _timer?.cancel();
-    print("Timer cancelado al salir de la vista");
+    print("🛑 Timer cancelado al salir de la vista");
     super.dispose();
   }
 
@@ -77,6 +77,22 @@ class _TimerViewState extends State<TimerView> {
   Widget build(BuildContext context) {
     return BaseView(
       title: 'Timer - Cronómetro',
+      appBar: AppBar(
+        title: const Text('Timer - Cronómetro'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF6A0DAD), // Morado fuerte
+                Color(0xFF9C27B0), // Morado intermedio
+                Color(0xFFE1BEE7), // Lavanda clara
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

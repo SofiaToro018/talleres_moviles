@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:talleres_moviles/themes/app_theme.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -12,19 +13,18 @@ class CustomDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Theme.of(
-                context,
-              ).colorScheme.primary, // Usa el color primario del tema
+              gradient: LinearGradient(
+                colors: const [AppTheme.primaryColor, AppTheme.secondaryColor],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
             child: const Text(
               'Menú',
-              style: TextStyle(
-                color: Colors
-                    .white, // Texto blanco para contrastar con el color primario
-                fontSize: 24,
-              ),
+              style: TextStyle(color: Colors.white, fontSize: 24),
             ),
           ),
+          // Navegación a diferentes vistas
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Inicio'),
@@ -54,7 +54,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           //!FUTURE
           ListTile(
-            leading: const Icon(Icons.input),
+            leading: const Icon(Icons.bolt_outlined),
             title: const Text('Future'),
             onTap: () {
               context.go('/future');
@@ -62,7 +62,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           //!ISOLATE
           ListTile(
-            leading: const Icon(Icons.input),
+            leading: const Icon(Icons.memory_outlined),
             title: const Text('Isolate'),
             onTap: () {
               context.go('/isolate');
@@ -70,7 +70,7 @@ class CustomDrawer extends StatelessWidget {
           ),
           //!TIMER
           ListTile(
-            leading: const Icon(Icons.input),
+            leading: const Icon(Icons.timer_outlined),
             title: const Text('Timer'),
             onTap: () {
               context.go('/timer');

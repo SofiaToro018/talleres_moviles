@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:talleres_moviles/themes/app_theme.dart';
 import '../../widgets/custom_drawer.dart';
 
@@ -113,7 +114,7 @@ class HomeScreen extends StatelessWidget {
     required String routeName,
   }) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, routeName),
+      onTap: () => context.go(routeName),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
