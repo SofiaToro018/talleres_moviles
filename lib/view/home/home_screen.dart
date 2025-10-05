@@ -1,85 +1,164 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../themes/app_theme.dart';
+import 'package:talleres_moviles/themes/app_theme.dart';
+import '../../widgets/custom_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Ítems que enviarán un parámetro y usarán distintos métodos de navegación
-    final List<Map<String, String>> items = [
-      {'label': 'Navegar con Go', 'param': 'Item 1', 'method': 'go'},
-      {'label': 'Navegar con Push', 'param': 'Item 2', 'method': 'push'},
-      {'label': 'Navegar con Replace', 'param': 'Item 3', 'method': 'replace'},
-    ];
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const Text(
-              'Bienvenido al Dashboard del Taller 2',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      drawer: const CustomDrawer(),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppTheme.primaryColor.withOpacity(0.95),
+                AppTheme.secondaryColor.withOpacity(0.9),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: GridView.builder(
-                itemCount: items.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                ),
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  final param = item['param']!;
-                  final method = item['method']!;
-                  return GestureDetector(
-                    onTap: () {
-                      // Selecciona método de navegación según el item
-                      if (method == 'go') {
-                        context.go('/detalle/$param/$method');
-                      } else if (method == 'push') {
-                        context.push('/detalle/$param/$method');
-                      } else {
-                        context.replace('/detalle/$param/$method');
-                      }
-                    },
-                    child: Card(
-                      color: AppTheme.cardColor,
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Hero(
-                        tag:
-                            param, // 👈 Hero usa el parámetro como identificador único
-                        child: Card(
-                          color: const Color.fromARGB(255, 142, 97, 225),
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Center(
-                            child: Text(
-                              item['label']!,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.primaryColor.withOpacity(0.4),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: AppBar(
+            title: const Text(
+              'Laboratorio de Concurrencia',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: const IconThemeData(color: Colors.white),
+          ),
+        ),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, AppTheme.secondaryColor.withOpacity(0.08)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 16),
+                Text(
+                  'Selecciona una demostración para comenzar:',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+                ),
+                const SizedBox(height: 24),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  children: [
+                    _buildFeatureCard(
+                      context,
+                      title: 'Future',
+                      description:
+                          'Ejemplo de asincronía con Future / async / await.',
+                      icon: Icons.bolt_outlined,
+                      routeName: '/future',
+                    ),
+                    _buildFeatureCard(
+                      context,
+                      title: 'Isolate',
+                      description:
+                          'Procesamiento en segundo plano con Isolate.',
+                      icon: Icons.memory_outlined,
+                      routeName: '/isolate',
+                    ),
+                    _buildFeatureCard(
+                      context,
+                      title: 'Timer',
+                      description: 'Control de tiempo y cronómetro con Timer.',
+                      icon: Icons.timer_outlined,
+                      routeName: '/timer',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard(
+    BuildContext context, {
+    required String title,
+    required String description,
+    required IconData icon,
+    required String routeName,
+  }) {
+    return GestureDetector(
+      onTap: () => context.go(routeName),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppTheme.primaryColor.withOpacity(0.95),
+              AppTheme.secondaryColor.withOpacity(0.85),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primaryColor.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 46, color: Colors.white),
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 13, color: Colors.white70),
+              ),
+            ],
+          ),
         ),
       ),
     );
