@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../../widgets/base_drawer.dart';
+
 /// Pantalla para demostrar el ciclo de vida de un StatefulWidget.
 class CicloVidaScreen extends StatefulWidget {
   const CicloVidaScreen({super.key});
@@ -33,16 +35,24 @@ class CicloVidaScreenState extends State<CicloVidaScreen> {
     if (kDebugMode) {
       print("🔵 build() -> Construyendo la pantalla");
     }
-    return Scaffold(
+    return BaseView(
+      title: "Ciclo de Vida de en flutter uceva",
+      appBar: AppBar(
+        title: const Text('Ciclo de Vida de en flutter uceva'),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF6A0DAD), Color(0xFF9C27B0), Color(0xFFE1BEE7)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Ciclo de Vida en Flutter (UCEVA)",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
             Text(texto, style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             ElevatedButton(

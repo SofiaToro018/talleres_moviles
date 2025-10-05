@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:talleres_moviles/widgets/custom_drawer.dart';
 
 /// PasoParametrosScreen - Pantalla para ingresar y enviar parámetros
 /// Permite ingresar un valor y enviarlo a DetalleScreen usando go, push y replace.
@@ -63,6 +64,7 @@ class _PasoParametrosScreenState extends State<PasoParametrosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -101,7 +103,7 @@ class _PasoParametrosScreenState extends State<PasoParametrosScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: limpiarCampo,
         backgroundColor: Colors.purple,
-        child: const Icon(Icons.cleaning_services),
+        //child: const Icon(Icons.cleaning_services),
         tooltip: 'Limpiar campo',
       ),
     );
