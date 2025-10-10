@@ -64,6 +64,10 @@ lib/
 
 ### 🔍 API usada
 
+```
+API_BASE_URL=https://rickandmortyapi.com/api
+```
+---
 - Endpoint principal: `GET https://rickandmortyapi.com/api/character` esta api es basicamente personajes de una serie en la cual se muestra el id, nombre, estado, especie e imagen en la cual redirege estos datos.
 
 ### Documentación:
@@ -126,28 +130,6 @@ context.go('/character_detail/${character.id}', extra: character);
 ```bash
 curl -s "https://rickandmortyapi.com/api/character" | jq '.results[0]'
 ```
-
----
-
-## 🖼️ Capturas y estados (referencia)
-
-| Listado (loading) | Listado (con datos) | Detalle | Logs / Consola |
-|:---:|:---:|:---:|:---:|
-| ![Inicial](image-1.png) | ![Datos cargados](image-3.png) | ![Detalle](image-2.png) | ![Consola](image-4.png) |
-
-
-> Si deseas incluir GIFs, sube los archivos al repo (por ejemplo `docs/gifs/`) y los referencio aquí.
-
----
-
-## .env (ejemplo)
-
-```
-API_BASE_URL=https://rickandmortyapi.com/api
-```
-
----
-
 ## 🟣Descripción de vistas 
 
 ### Home
@@ -171,6 +153,10 @@ API_BASE_URL=https://rickandmortyapi.com/api
 | Capturas (List)| 
 |:---:|
 | ![alt text](image-1.png)| 
+
+| Capturas (List)| 
+|:---:|
+| ![alt text](assets/images/img.png)| 
 
 
 ---
