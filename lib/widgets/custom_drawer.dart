@@ -77,6 +77,16 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.list),
+            title: const Text('Listar Personajes'),
+            onTap: () {
+              context.go(
+                '/rickandmorty',
+              ); // Navega a la pantalla de listar personajes
+              Navigator.pop(context); // Cierra el drawer
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Configuración'),
             onTap: () {

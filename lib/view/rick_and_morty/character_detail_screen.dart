@@ -1,60 +1,140 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../models/character_model.dart';
+import '../../themes/app_theme.dart';
 
-class CharacterDetailScreen extends StatelessWidget {
+class CharacterDetailScreen extends StatefulWidget {
   final Character character;
 
   const CharacterDetailScreen({super.key, required this.character});
 
   @override
+  State<CharacterDetailScreen> createState() => _CharacterDetailScreenState();
+}
+
+class _CharacterDetailScreenState extends State<CharacterDetailScreen>
+    with SingleTickerProviderStateMixin {
+  bool _hover = false;
+
+  @override
   Widget build(BuildContext context) {
+    final character = widget.character;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text(character.name)),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Hero(
-              tag: 'character_${character.id}',
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  character.image,
-                  height: 250,
-                  width: 250,
-                  fit: BoxFit.cover,
+      appBar: AppBar(
+        title: Text(character.name),
+        backgroundColor: AppTheme.primaryColor,
+        centerTitle: true,
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, AppTheme.secondaryColor.withOpacity(0.08)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Imagen con efecto hover
+              MouseRegion(
+                onEnter: (_) => setState(() => _hover = true),
+                onExit: (_) => setState(() => _hover = false),
+                child: AnimatedScale(
+                  duration: const Duration(milliseconds: 300),
+                  scale: _hover ? 1.05 : 1.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                      character.image,
+                      width: 220,
+                      height: 220,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              character.name,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Especie: ${character.species}',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 5),
-            Text(
-              'Estado: ${character.status}',
-              style: TextStyle(
-                fontSize: 16,
-                color: character.status == 'Alive'
-                    ? Colors.green
-                    : (character.status == 'Dead' ? Colors.red : Colors.grey),
+              const SizedBox(height: 30),
+
+              // Card de información
+              Card(
+                elevation: 8,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                shadowColor: AppTheme.primaryColor.withOpacity(0.2),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 24,
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        character.name,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Especie: ${character.species}',
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Estado: ${character.status}',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: character.status.toLowerCase() == 'alive'
+                              ? Colors.green
+                              : character.status.toLowerCase() == 'dead'
+                              ? Colors.red
+                              : Colors.orange,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'ID del personaje: ${character.id}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Divider(),
-            const SizedBox(height: 10),
-            Text(
-              'ID del personaje: ${character.id}',
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
-            ),
-          ],
+
+              const SizedBox(height: 40),
+
+              // Botón "Volver"
+              ElevatedButton.icon(
+                onPressed: () => context.go('/rickandmorty'),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text('Volver al listado'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 5,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
