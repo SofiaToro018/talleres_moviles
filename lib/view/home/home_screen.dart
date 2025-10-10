@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 16),
                 Text(
-                  'Selecciona una demostración para comenzar:',
+                  'Bienvenido al mundo de Flutter',
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
@@ -75,26 +75,10 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     _buildFeatureCard(
                       context,
-                      title: 'Future',
-                      description:
-                          'Ejemplo de asincronía con Future / async / await.',
-                      icon: Icons.bolt_outlined,
-                      routeName: '/future',
-                    ),
-                    _buildFeatureCard(
-                      context,
-                      title: 'Isolate',
-                      description:
-                          'Procesamiento en segundo plano con Isolate.',
-                      icon: Icons.memory_outlined,
-                      routeName: '/isolate',
-                    ),
-                    _buildFeatureCard(
-                      context,
-                      title: 'Timer',
-                      description: 'Control de tiempo y cronómetro con Timer.',
-                      icon: Icons.timer_outlined,
-                      routeName: '/timer',
+                      title: 'Listado de Personajes',
+                      description: 'Explora personajes de Rick and Morty',
+                      icon: Icons.list,
+                      routeName: '/rickandmorty',
                     ),
                   ],
                 ),
