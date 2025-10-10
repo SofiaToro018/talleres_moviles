@@ -14,11 +14,34 @@ class CharacterListScreen extends StatefulWidget {
 class _CharacterListScreenState extends State<CharacterListScreen> {
   late Future<List<Character>> _charactersFuture;
   final CharacterService _service = CharacterService();
+  String _lastLoggedState = '';
 
   @override
   void initState() {
     super.initState();
-    _charactersFuture = _service.fetchCharacters();
+    _charactersFuture = _fetchAndLog();
+  }
+
+  Future<List<Character>> _fetchAndLog() {
+    // Logs para la consola sobre el ciclo de la petición
+    print('Antes de la consulta');
+    final future = _service.fetchCharacters();
+    print('Durante la consulta');
+    future
+        .then((data) {
+          print('Después de la consulta - éxito: ${data.length} elementos');
+        })
+        .catchError((e) {
+          print('Después de la consulta - error: $e');
+        });
+    return future;
+  }
+
+  void _logState(String state) {
+    if (_lastLoggedState != state) {
+      _lastLoggedState = state;
+      print(state);
+    }
   }
 
   @override
@@ -37,20 +60,57 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
         child: FutureBuilder<List<Character>>(
           future: _charactersFuture,
           builder: (context, snapshot) {
+            // Log de estado para consola
             if (snapshot.connectionState == ConnectionState.waiting) {
+              _logState('Estado: Cargando');
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
+              _logState('Estado: Error - ${snapshot.error}');
+              // Mensaje de error amigable con opción para reintentar
               return Center(
-                child: Text(
-                  'Error: ${snapshot.error}',
-                  style: const TextStyle(color: Colors.red),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'No se pudieron cargar los personajes.',
+                      style: TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                    const SizedBox(height: 12),
+                    ElevatedButton.icon(
+                      onPressed: () => setState(
+                        () => _charactersFuture = _service.fetchCharacters(),
+                      ),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Reintentar'),
+                    ),
+                  ],
                 ),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No se encontraron personajes'));
+              _logState('Estado: Vacío');
+              // Lista vacía: mensaje claro y reintento
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'No se encontraron personajes.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: () => setState(
+                        () => _charactersFuture = _service.fetchCharacters(),
+                      ),
+                      child: const Text('Reintentar'),
+                    ),
+                  ],
+                ),
+              );
             }
 
             final characters = snapshot.data!;
+            _logState('Estado: Éxito - ${characters.length} elementos');
 
             return ListView.builder(
               itemCount: characters.length,
