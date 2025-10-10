@@ -57,5 +57,18 @@ final GoRouter appRouter = GoRouter(
       name: 'timer',
       builder: (context, state) => const TimerView(),
     ),
+    GoRoute(
+      path: '/rickandmorty',
+      name: 'rickandmorty',
+      builder: (context, state) => const ListScreen(),
+    ),
+    GoRoute(
+      path: '/rickandmorty/detail',
+      name: 'rickandmorty_detail',
+      builder: (context, state) {
+        final character = state.extra as Character;
+        return DetailScreen(character: character);
+      },
+    ),
   ],
 );
