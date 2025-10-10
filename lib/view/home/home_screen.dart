@@ -3,8 +3,15 @@ import 'package:go_router/go_router.dart';
 import 'package:talleres_moviles/themes/app_theme.dart';
 import '../../widgets/custom_drawer.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  double _tapScale = 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class HomeScreen extends StatelessWidget {
           ),
           child: AppBar(
             title: const Text(
-              'Laboratorio de Concurrencia',
+              'Consumo de API Rick and Morty',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -45,6 +52,8 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: Container(
+        width: double.infinity,
+        height: double.infinity, // 🔹 Ocupa toda la pantalla
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.white, AppTheme.secondaryColor.withOpacity(0.08)],
@@ -55,50 +64,54 @@ class HomeScreen extends StatelessWidget {
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                Text(
-                  'Selecciona una demostración para comenzar:',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
-                ),
-                const SizedBox(height: 24),
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  children: [
-                    _buildFeatureCard(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight:
+                    600, // 🔹 Garantiza que el scroll tenga fondo completo
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    'Bienvenido al mundo Rick and Morty, podrás explorar personajes de la serie y ver detalles interesantes de cada uno.',
+                    style: Theme.of(
                       context,
-                      title: 'Future',
-                      description:
-                          'Ejemplo de asincronía con Future / async / await.',
-                      icon: Icons.bolt_outlined,
-                      routeName: '/future',
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+                  ),
+                  const SizedBox(height: 24),
+                  Center(
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.92, end: 1.0),
+                      duration: const Duration(milliseconds: 420),
+                      curve: Curves.easeOutBack,
+                      builder: (context, entranceScale, child) {
+                        return GestureDetector(
+                          onTap: () => context.go('/rickandmorty'),
+                          onTapDown: (_) => setState(() => _tapScale = 0.97),
+                          onTapUp: (_) => setState(() => _tapScale = 1.0),
+                          onTapCancel: () => setState(() => _tapScale = 1.0),
+                          child: Transform.scale(
+                            scale: entranceScale * _tapScale,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: SizedBox(
+                        width: 320,
+                        height: 220,
+                        child: _buildFeatureCard(
+                          context,
+                          title: 'Listado de Personajes',
+                          description: 'Explora personajes de Rick and Morty',
+                          icon: Icons.list,
+                          routeName: '/rickandmorty',
+                        ),
+                      ),
                     ),
-                    _buildFeatureCard(
-                      context,
-                      title: 'Isolate',
-                      description:
-                          'Procesamiento en segundo plano con Isolate.',
-                      icon: Icons.memory_outlined,
-                      routeName: '/isolate',
-                    ),
-                    _buildFeatureCard(
-                      context,
-                      title: 'Timer',
-                      description: 'Control de tiempo y cronómetro con Timer.',
-                      icon: Icons.timer_outlined,
-                      routeName: '/timer',
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -113,52 +126,50 @@ class HomeScreen extends StatelessWidget {
     required IconData icon,
     required String routeName,
   }) {
-    return GestureDetector(
-      onTap: () => context.go(routeName),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeInOut,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppTheme.primaryColor.withOpacity(0.95),
-              AppTheme.secondaryColor.withOpacity(0.85),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    // Tarjeta sin GestureDetector (el gesto se maneja desde el padre para evitar conflictos)
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.primaryColor.withOpacity(0.95),
+            AppTheme.secondaryColor.withOpacity(0.85),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryColor.withOpacity(0.28),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.primaryColor.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40, color: Colors.white),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12.5, color: Colors.white70),
             ),
           ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 46, color: Colors.white),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                description,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 13, color: Colors.white70),
-              ),
-            ],
-          ),
         ),
       ),
     );

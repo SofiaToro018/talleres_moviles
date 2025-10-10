@@ -8,6 +8,11 @@ import '../view/future/future_view.dart';
 import '../view/isolate/isolate_view.dart';
 import '../view/timer/timer_view.dart';
 
+import '../view/rick_and_morty/character_detail_screen.dart';
+import '../view/rick_and_morty/character_list_screen.dart';
+
+import '../models/character_model.dart';
+
 final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
@@ -56,6 +61,22 @@ final GoRouter appRouter = GoRouter(
       path: '/timer',
       name: 'timer',
       builder: (context, state) => const TimerView(),
+    ),
+    // Ruta del listado de personajes
+    GoRoute(
+      path: '/rickandmorty',
+      name: 'rickandmorty',
+      builder: (context, state) => const CharacterListScreen(),
+    ),
+
+    // Ruta del detalle del personaje
+    GoRoute(
+      path: '/character_detail/:id',
+      name: 'character_detail',
+      builder: (context, state) {
+        final character = state.extra as Character;
+        return CharacterDetailScreen(character: character);
+      },
     ),
   ],
 );

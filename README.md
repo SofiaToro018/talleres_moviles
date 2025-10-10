@@ -1,216 +1,196 @@
 
-# 🟣 README – Taller Flutter (Future, Timer e Isolate)
-#Laura Sofia Toro Garcia
-#230222021
+# 🟣 README – Taller manejo de api (HTTP)
 
-## 📘 Descripción general  
+Autor: Laura Sofía Toro García
 
-Este proyecto implementa tres funcionalidades principales en Flutter:
+## 📘 Descripción general
 
-- **Future / async-await** para manejar operaciones asíncronas sin bloquear la UI.  
-- **Cronómetro (Timer)** con control de tiempo en vivo.  
-- **Tarea pesada (Isolate)** ejecutada en segundo plano sin afectar el rendimiento de la aplicación.  
+- Desarrollar un módulo que consuma datos desde una API pública usando el paquete http, mostrando un listado y una pantalla de detalle con navegación via go_router. El foco es implementar un flujo robusto de consumo HTTP que cubra estados de carga/éxito/error, un manejo de errores claro y buena separación de responsabilidades mediante una capa de servicios/repositorios y modelos tipados.
 
-Todas las vistas comparten un **diseño moderno con tema morado degradado**, coherente en toda la aplicación, y una **navegación lateral** implementada mediante un **Drawer personalizado**.
+- Integración HTTP con una API pública (Rick and Morty) para listar y ver detalles de personajes.
+
+- El proyecto usa `go_router` para la navegación y un tema morado degradado coherente en todas las pantallas.
 
 ---
 
-## 🎯 Objetivo  
+## 🏁 Cómo ejecutar (rápido)
 
-**Desarrollar una aplicación en Flutter** que demuestre la asincronía utilizando:  
+1. Asegúrate de tener Flutter instalado (compatible con tu plataforma).
+2. Copia el archivo `.env.example` a `.env` y ajusta la variable `API_BASE_URL` si es necesario.
+3. Ejecuta:
 
-- `Future` y `async/await` para operaciones no bloqueantes,  
-- `Timer` para control del tiempo (cronómetro o cuenta regresiva), y  
-- `Isolate` (o `compute()`) para ejecutar tareas pesadas en segundo plano.  
-
-El propósito es entender cómo Flutter maneja tareas **asíncronas y paralelas** sin bloquear la interfaz del usuario, manteniendo siempre un diseño fluido, limpio y moderno.
-
----
-
-## ⚙️ Estructura general  
-
-| Pantalla | Descripción |
-|-----------|--------------|
-| **Future** | Simula una carga asíncrona de datos con `Future.delayed` y muestra el resultado al usuario. |
-| **Cronómetro (Timer)** | Permite iniciar, pausar, reanudar y reiniciar el tiempo, actualizando la UI cada 100 ms. |
-| **Tarea pesada (Isolate)** | Ejecuta una suma intensiva (1..n) sin bloquear la UI principal. Usa `Isolate.spawn` o `compute()` según la plataforma. |
-| **Menú lateral (CustomDrawer)** | Permite navegar entre las pantallas principales del proyecto. |
+```bash
+flutter pub get
+flutter run
+```
 
 ---
 
-## 📁 Organización de carpetas  
+### 🏗️ Arquitectura (carpetas relevantes)
+
 ```
 lib/
-│
 ├── main.dart
 │
+├── routes/
+│   └── app_router.dart         # Definición de todas las rutas con go_router
+│
 ├── themes/
-│ └── app_themes.dart # Tema general con tonos morados y degradados
+│   └── app_theme.dart          # Colores, estilos, etc.
 │
-├── views/
-│ ├── future_view.dart # Demostración de Future / async-await
-│ ├── timer_view.dart # Cronómetro usando Timer
-│ └── isolate_view.dart # Tarea pesada usando Isolate / compute
+├── models/
+│   └── character_model.dart    # Modelo del personaje
 │
-└── widgets/
-└── custom_drawer.dart # Menú lateral común a todas las pantallas
+├── services/
+│   └── character_service.dart  # Servicio HTTP para consumir la API
+│
+├── view/
+│   ├── home/
+│   │   └── home_screen.dart    # Pantalla principal (botón para ir al listado)
+│   │
+│   ├── rickandmorty/           # Nuevo módulo (carpeta separada)
+│   │   ├── list_screen.dart    # Pantalla con el ListView de personajes
+│   │   └── detail_screen.dart  # Pantalla con detalle del personaje
+│   │
+│   ├── ciclo_vida/
+│   ├── future/
+│   ├── isolate/
+│   ├── paso_parametros/
+│   └── timer/
+│
+└── ...
 ```
-
 ---
 
-## ⏳ 1. Future y async/await  
+### 🔍 API usada
 
-**Archivo:** `future_view.dart`
-
-### 🔧 Lógica usada
-
-- Usa un `Future` para simular una tarea asíncrona (como una petición a un servidor).  
-- `async/await` permite esperar el resultado sin congelar la interfaz.  
-- Muestra el estado del proceso: “Cargando…”, “Completado” o “Error”.  
-
-### ⚙️ Ejemplo:
-```dart
-Future<String> _fakeFetchData() async {
-  await Future.delayed(const Duration(seconds: 3));
-  return "Datos cargados correctamente";
-}
-
-void _loadData() async {
-  setState(() => _status = "Cargando...");
-  final result = await _fakeFetchData();
-  setState(() => _status = result);
-}
 ```
-# 🎨 Interfaz
-
-- Texto central con el estado actual.
-- Botón “Cargar datos”.
-- Fondo degradado morado coherente con el tema general.
-
-
-### ** Resultado Future / async / await - Carga Asíncrona de Datos**
-
-| Estado inicial | Durante la carga | Datos cargados | Logs de consola |
-|:---:|:---:|:---:|:---:|
-| ![Inicial](image-12.png)| ![Durante la carga](image-13.png) | ![Datos cargados](image-14.png) | ![Logs de consola](image-15.png) |
-| **⏳ Estado inicial** | **🔄 Durante la carga** | **✅ Datos cargados** | **📊 Logs de consola** |
-
-# 💡 Cuándo usar Future
-- Consultas a APIs.
-- Operaciones de red o base de datos.
-- Simulación de procesos o retardos controlados.
-
-
+API_BASE_URL=https://rickandmortyapi.com/api
+```
 ---
+- Endpoint principal: `GET https://rickandmortyapi.com/api/character` esta api es basicamente personajes de una serie en la cual se muestra el id, nombre, estado, especie e imagen en la cual redirege estos datos.
 
-## 🕒 2. Cronómetro (uso de Timer)
+### Documentación:
+[text](https://rickandmortyapi.com/documentation/)
 
-**Archivo:** `timer_view.dart`
+- Ejemplo de respuesta (resumida):
 
-### 🔧 Lógica usada:
-
-- Se utiliza la clase `Timer` de Dart para actualizar el tiempo cada 100 ms.
-- Cuando el usuario presiona **Iniciar**, se activa el contador.
-- **Pausar** detiene el Timer (cancelando la instancia actual).
-- **Reanudar** crea un nuevo Timer desde el valor previo.
-- **Reiniciar** pone el tiempo en cero.
-
-#### 🔁 Ciclo de actualización:
-```dart
-_timer = Timer.periodic(Duration(milliseconds: 100), (timer) {
-  setState(() {
-    _milliseconds += 100;
-  });
-});
-```
-
-### 🎨 Interfaz:
-
-- Tiempo grande en el centro (MM:SS:CS).
-- Botones redondeados (**Iniciar**, **Pausar**, **Reanudar**, **Reiniciar**).
-- Fondo con degradado morado.
-- Estado visible (“DETENIDO”, “EN MARCHA”, etc.).
-
-### ** Resultado Timer Cronómetro**
-
-| Iniciar Crónometro | Pausa | Reanudar | Reiniciar | Logs de consola |
-|:---:|:---:|:---:|:---:|:---:|
-| ![Estado inicial](image-5.png) | ![Pausa](image-7.png) | ![Reanudar](image-8.png) | ![Reiniciar](image-9.png) |![consola](image-10.png) |
-| **⏱️ Iniciar Crónometro** |**⏸️  Pausado** | **▶️ Reanudar** | **🔄 Reiniciar** |  **📊 Logs de consola** |
-
-Usa `Timer` cuando necesites actualizar la UI periódicamente o ejecutar tareas a intervalos regulares, como:
-
-- Cronómetros o temporizadores.
-- Animaciones simples.
-- Recordatorios cortos o tareas programadas.
-
----
-
-## 🧠 3. Tarea Pesada (uso de Isolate / compute())
-
-**Archivo:** `isolate_view.dart`
-
-### 🔧 Lógica usada:
-
-- Permite ingresar un número n (ejemplo: 50,000,000).
-- Ejecuta la función `heavySumTask(n)` que calcula la suma de 1 hasta n.
-- Para no bloquear la UI:
-  - En móviles o escritorio: usa `Isolate.spawn()`.
-  - En Flutter Web: usa `compute()`.
-
-#### ⚙️ Ejemplo:
-```dart
-final result = await compute(heavySumTask, input);
-```
-
-#### 🧩 Función pesada:
-```dart
-Future<Map<String, dynamic>> heavySumTask(int n) async {
-  var sum = 0;
-  for (var i = 1; i <= n; i++) sum += i;
-  return {'n': n, 'sum': sum};
+```json
+{
+	"info": {"count": 826, "pages": 42, "next": "...", "prev": null},
+	"results": [
+		{
+			"id": 1,
+			"name": "Rick Sanchez",
+			"status": "Alive",
+			"species": "Human",
+			"gender": "Male",
+			"image": "https://.../rick.png",
+			
+		}
+	]
 }
 ```
 
-### 🎨 Interfaz:
+En el proyecto la URL base se gestiona desde `.env` como `API_BASE_URL` y el servicio principal está en `lib/services/character_service.dart`.
 
-- Campo de entrada para n.
-- Botones: Iniciar / Cancelar.
-- Muestra el estado actual: Listo, Ejecutando, Completado, Error.
-- Incluye consola interactiva para logs.
+### 🔀 Rutas definidas (go_router) y parámetros
 
-### 🧠 Isolate - Procesamiento Pesado Sin Bloquear UI**
+El ruteo está en `lib/routes/app_router.dart`. Rutas importantes relacionadas con HTTP:
 
-| Estado Inicial | Procesamiento en Isolate | Logs en Consola |
-|:---:|:---:|:---:|
-| ![Isolate inicio](image-16.png) | ![Isolate Ejecutando](image-17.png) | ![Consola Isolate](image-18.png) |![ logs ](image-19.png) |
-| **🔧 Listo para procesar** | **⚙️ Análisis de  datos** | **📊 Logs de Isolate** |**📊 Logs de Consola** |
+- `/rickandmorty` (name: `rickandmorty`)
+	- Pantalla: `CharacterListScreen`
+	- Uso: muestra listado de personajes (no recibe parámetros).
 
-### 💡 Cuándo usar Isolate:
+- `/character_detail/:id` (name: `character_detail`)
+	- Pantalla: `CharacterDetailScreen`
+	- Parámetros: `id` en la ruta.
+	- Además, la lista pasa el objeto `Character` por `state.extra` para evitar otra petición si ya se tiene el dato:
 
-Usa `Isolate` o `compute()` cuando tengas tareas CPU-bound que puedan bloquear la interfaz, como:
+```dart
+context.go('/character_detail/${character.id}', extra: character);
+```
 
-- Procesamientos matemáticos extensos.
-- Análisis o conversión de datos pesados.
-- Procesamiento de imágenes o archivos grandes.
+- Rutas auxiliares del proyecto (resumen):
+	- `/` → `HomeScreen`
+	- `/paso_parametros` → `PasoParametrosScreen`
+	- `/detalle/:parametro/:metodo` → `DetalleScreen`
+	- `/future`, `/isolate`, `/timer`
 
-## ✅ Conclusión
+### 🧾 Flujo de carga (en la lista)
 
-Este taller permitió comprender en profundidad cómo Flutter maneja la **asincronía y la ejecución en segundo plano**, dos aspectos esenciales para desarrollar aplicaciones móviles modernas, reactivas y eficientes.  
-A través de la implementación práctica de **Future**, **async/await**, **Timer** e **Isolate**, se demostró cómo es posible ejecutar tareas de distinta naturaleza sin bloquear la interfaz del usuario.
+- `CharacterListScreen` usa `FutureBuilder` con `CharacterService.fetchCharacters()`.
+- Estados mostrados:
+	- `ConnectionState.waiting` → `CircularProgressIndicator` (estado de carga).
+	- `snapshot.hasError` → mensaje de error.
+	- datos → `ListView.builder` con tarjetas.
 
-En primer lugar, el uso de **Future y async/await** facilitó la gestión de operaciones asíncronas como simulaciones de carga de datos o tareas que requieren esperar una respuesta. Esto permitió evidenciar cómo Flutter puede continuar respondiendo a las interacciones del usuario mientras se completan procesos en segundo plano, manteniendo una experiencia fluida y sin interrupciones.
+### 🔧 Ejemplo de petición (curl)
 
-Posteriormente, con el uso del **Timer**, se desarrolló un cronómetro totalmente funcional con opciones de iniciar, pausar, reanudar y reiniciar el conteo del tiempo. Esta implementación demostró cómo controlar procesos repetitivos o de actualización constante en intervalos definidos, aplicando la función `Timer.periodic()` para mantener el flujo de información sincronizado con la UI en tiempo real.
+```bash
+curl -s "https://rickandmortyapi.com/api/character" | jq '.results[0]'
+```
+## 🟣Descripción de vistas 
 
-Finalmente, la parte del **Isolate (o compute())** permitió abordar el concepto de tareas **CPU-bound**, es decir, aquellas que requieren alto procesamiento. Se implementó un proceso pesado (una suma masiva) ejecutado en un hilo independiente, garantizando que la interfaz no se congelara ni perdiera rendimiento durante su ejecución. Esto reforzó el entendimiento sobre cómo Flutter maneja la **paralelización y la comunicación entre hilos** mediante el uso de mensajes.
+### Home
 
-En conjunto, los resultados obtenidos cumplen con todos los objetivos del ejercicio:  
-- Se implementaron correctamente los mecanismos de asincronía de Flutter.  
-- Se garantizó una experiencia de usuario fluida sin bloqueos de la UI.  
-- Se comprendió cómo distribuir las cargas de trabajo entre tareas ligeras y pesadas.  
+- Qué ve el usuario: una pantalla limpia con el título del taller y botones/entradas para navegar a los diferentes módulos. En el caso del taller HTTP hay un acceso claro hacia el listado de personajes (mediante card).
 
-En conclusión, este proyecto sirvió para consolidar la comprensión de los **principios fundamentales de concurrencia, asincronía y ejecución en segundo plano en Flutter**, habilidades clave para crear aplicaciones escalables, reactivas y optimizadas en entornos reales de desarrollo.
+- Cómo cumple con lo pedido: desde Home se facilita la navegación hacia el módulo `rickandmorty` usando `go_router`, manteniendo consistencia visual con el tema morado. Provee un punto de entrada simple que demuestra la navegación entre pantallas.
+
+|  Captura (Home):| 
+|:---:|
+|![Home placeholder](image.png)  | 
+
+---
+
+### List (CharacterListScreen)
+
+- Qué ve el usuario: una lista desplazable (ListView) de tarjetas que muestran la imagen, nombre, especie y estado de cada personaje. Mientras se cargan los datos aparece un indicador de progreso; en caso de error se muestra un mensaje con opción para reintentar.
+
+- Cómo cumple con lo pedido: implementa el consumo HTTP a través de `CharacterService.fetchCharacters()`, maneja los estados `loading`, `success` y `error` (con mensajes claro y reintento). Además, cada tarjeta navega al detalle pasando `character` por `extra` para evitar una segunda petición.
+
+| Capturas (List)| 
+|:---:|
+| ![alt text](image-1.png)| 
+
+| Capturas (List)| 
+|:---:|
+| ![alt text](assets/images/img.png)| 
+
+
+---
+
+### Detail (CharacterDetailScreen)
+
+- Qué ve el usuario: vista enfocada en un personaje: imagen grande, nombre, estado, especie, género y ubicación. Incluye botón para regresar al listado. También muestra mensajes si falta información.
+
+- Cómo cumple con lo pedido: recibe el `id` por la ruta y el objeto `Character` mediante `state.extra`; si `extra` no está presente puede realizar una petición específica por `id`. La pantalla mantiene el tema y ofrece una UX clara para inspeccionar el detalle.
+
+| Captura (Detail): | 
+|:---:|
+|![alt text](image-2.png)  | 
+
+---
+### Navegacion de la app
+
+| ![List loading](assets/images/Taller_http.gif) |  |  |  |
+
+---
+
+## Conclusión
+
+En función de los requerimientos iniciales, el módulo desarrollado cumple con los objetivos planteados:
+
+- Consumo de API: se implementó la llamada al endpoint público (`/character`) usando el paquete `http` y la URL base se gestiona desde `.env`.
+
+- Listado y detalle: la aplicación muestra un listado paginado (ListView) y una pantalla de detalle; la navegación entre pantallas se gestiona con `go_router` y se pasa el objeto `Character` vía `state.extra` cuando está disponible.
+
+- Manejo de estados: la UI cubre los estados de carga, éxito, vacío y error (con indicador de carga y mensajes de reintento), siguiendo buenas prácticas de UX.
+
+- Manejo de errores: el servicio encapsula el parseo y detecta códigos HTTP no exitosos, exponiendo errores claros para la interfaz.
+
+- Separación de responsabilidades: la lógica de I/O está en `lib/services/character_service.dart`, los modelos en `lib/models/character_model.dart` y la UI en `lib/view/...`, lo que facilita pruebas y mantenimiento.
 
 
 
