@@ -206,7 +206,7 @@ Ejemplo de Release Notes claras:
 Firebase genera un enlace único:
 
 ```
-https://appdistribution.firebase.google.com/testerapps/<app-id>/releases/<release-id>
+https://appdistribution.firebase.google.com/testerapps/1:696232247879:android:08d21fd93c20b4d062e762/releases/28fl8hjo62tao?utm_source=firebase-console
 ```
 
 Copia este enlace y comparte con tester.
