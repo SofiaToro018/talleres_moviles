@@ -22,10 +22,44 @@ class _CharacterDetailScreenState extends State<CharacterDetailScreen>
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(character.name),
-        backgroundColor: AppTheme.primaryColor,
-        centerTitle: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppTheme.primaryColor.withOpacity(0.95),
+                AppTheme.secondaryColor.withOpacity(0.9),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.primaryColor.withOpacity(0.4),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: AppBar(
+            title: Text(
+              character.name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            iconTheme: const IconThemeData(color: Colors.white),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.go('/rickandmorty'),
+            ),
+          ),
+        ),
       ),
       body: Container(
         width: double.infinity,
@@ -114,25 +148,6 @@ class _CharacterDetailScreenState extends State<CharacterDetailScreen>
               ),
 
               const SizedBox(height: 40),
-
-              // Botón "Volver"
-              ElevatedButton.icon(
-                onPressed: () => context.go('/rickandmorty'),
-                icon: const Icon(Icons.arrow_back),
-                label: const Text('Volver al listado'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 5,
-                ),
-              ),
             ],
           ),
         ),
