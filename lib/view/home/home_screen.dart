@@ -98,8 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       },
                       child: SizedBox(
-                        width: 320,
-                        height: 220,
+                        width: 280,
+                        height: 200,
                         child: _buildFeatureCard(
                           context,
                           title: 'Listado de Personajes',
@@ -126,48 +126,79 @@ class _HomeScreenState extends State<HomeScreen> {
     required IconData icon,
     required String routeName,
   }) {
-    // Tarjeta sin GestureDetector (el gesto se maneja desde el padre para evitar conflictos)
+    // Tarjeta moderna y compacta con efectos visuales mejorados
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       decoration: BoxDecoration(
+        // Gradiente moderno y atractivo
         gradient: LinearGradient(
           colors: [
-            AppTheme.primaryColor.withOpacity(0.95),
-            AppTheme.secondaryColor.withOpacity(0.85),
+            AppTheme.primaryColor.withOpacity(0.9),
+            AppTheme.primaryColor.withOpacity(0.7),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: [
+          // Sombra profunda
           BoxShadow(
-            color: AppTheme.primaryColor.withOpacity(0.28),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            color: AppTheme.primaryColor.withOpacity(0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+          // Efecto de borde brillante (glow)
+          BoxShadow(
+            color: AppTheme.secondaryColor.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 0),
           ),
         ],
+        border: Border.all(color: Colors.white.withOpacity(0.1), width: 1.5),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: Colors.white),
-            const SizedBox(height: 12),
+            // Icono en círculo con fondo degradado
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.15),
+                    Colors.white.withOpacity(0.05),
+                  ],
+                ),
+              ),
+              padding: const EdgeInsets.all(12),
+              child: Icon(
+                icon,
+                size: 36,
+                color: Colors.white.withOpacity(0.95),
+              ),
+            ),
+            const SizedBox(height: 10),
             Text(
               title,
               style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
                 color: Colors.white,
+                letterSpacing: 0.3,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Text(
               description,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12.5, color: Colors.white70),
+              style: TextStyle(
+                fontSize: 11.5,
+                color: Colors.white.withOpacity(0.75),
+                height: 1.3,
+              ),
             ),
           ],
         ),

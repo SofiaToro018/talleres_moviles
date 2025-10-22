@@ -50,9 +50,36 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
 
     return BaseView(
       title: 'Personajes de Rick and Morty',
-      appBar: AppBar(
-        title: const Text('Personajes de Rick and Morty'),
-        backgroundColor: theme.colorScheme.primary,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                const Color(0xFF7C3AED).withOpacity(0.95),
+                const Color(0xFFBF40BF).withOpacity(0.9),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: AppBar(
+            title: const Text(
+              'Personajes de Rick and Morty',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: const IconThemeData(color: Colors.white),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.go('/'),
+            ),
+          ),
+        ),
       ),
       body: Container(
         color: theme.colorScheme.surface, // Fondo igual al del home
