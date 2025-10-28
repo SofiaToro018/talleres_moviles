@@ -13,6 +13,10 @@ import '../view/rick_and_morty/character_list_screen.dart';
 
 import '../models/character_model.dart';
 
+import '../view/auth/login_screen.dart';
+import '../view/auth/register_screen.dart';
+import '../view/profile/profile_screen.dart';
+
 final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
@@ -77,6 +81,26 @@ final GoRouter appRouter = GoRouter(
         final character = state.extra as Character;
         return CharacterDetailScreen(character: character);
       },
+    ),
+    // Pantalla de login
+    GoRoute(
+      path: '/login',
+      name: 'login',
+      builder: (context, state) => const LoginScreen(),
+    ),
+
+    // Pantalla de registro
+    GoRoute(
+      path: '/register',
+      name: 'register',
+      builder: (context, state) => const RegisterScreen(),
+    ),
+
+    // Pantalla de perfil (evidencia)
+    GoRoute(
+      path: '/profile',
+      name: 'profile',
+      builder: (context, state) => const ProfileScreen(),
     ),
   ],
 );

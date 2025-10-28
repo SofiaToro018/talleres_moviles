@@ -38,6 +38,13 @@ dependencies:
   http: ^1.5.0
   flutter_dotenv: ^6.0.0
 
+# Almacenamiento
+  shared_preferences: ^2.2.2       # Datos NO sensibles
+  flutter_secure_storage: ^9.0.0   # Datos sensibles (tokens)
+  
+  # Gestión de Estado
+  provider: ^6.1.1                  # State management
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
