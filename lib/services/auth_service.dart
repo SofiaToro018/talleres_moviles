@@ -31,31 +31,55 @@ class AuthService with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await http.post(
-        Uri.parse(loginEndpoint),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(request.toJson()),
-      );
+      print('🔵 Intentando login a: $loginEndpoint');
+
+      final response = await http
+          .post(
+            Uri.parse(loginEndpoint),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              throw Exception(
+                'Tiempo de espera agotado. Verifica tu conexión a internet.',
+              );
+            },
+          );
+
+      print('🔵 Respuesta del servidor - Status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final token = data['access_token'];
+        print('🔵 Datos recibidos: $data');
+
+        // El servidor devuelve 'token', no 'access_token'
+        final token = data['token'] ?? data['access_token'];
+
+        if (token == null) {
+          throw Exception('No se recibió token del servidor');
+        }
 
         // Guardamos token de forma segura
         await storage.write(key: 'access_token', value: token);
         _token = token;
 
-        // Si el backend devuelve info del usuario, la guardamos
-        // (de lo contrario podrías hacer una petición adicional para obtenerla)
+        // Extraer datos del usuario de la respuesta
+        final userData = data['user'] ?? {};
         _user = User(
-          name: data['user']?['name'] ?? 'Unknown',
-          email: data['user']?['email'] ?? request.email,
+          name: userData['name'] ?? 'Usuario',
+          email: userData['email'] ?? request.email,
         );
 
         // Guardamos nombre/email en SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('user_name', _user!.name);
         await prefs.setString('user_email', _user!.email);
+
+        print(
+          '✅ Login exitoso - Usuario: ${_user!.name}, Email: ${_user!.email}',
+        );
 
         _isLoading = false;
         _errorMessage = null;
@@ -64,12 +88,30 @@ class AuthService with ChangeNotifier {
       } else {
         final body = jsonDecode(response.body);
         _errorMessage = body['message'] ?? 'Error al iniciar sesión';
+        print('❌ Error del servidor: $_errorMessage');
         _isLoading = false;
         notifyListeners();
         return false;
       }
+    } on http.ClientException catch (e) {
+      _errorMessage =
+          'No se puede conectar al servidor. Verifica:\n'
+          '1. Conexión a internet\n'
+          '2. Permisos de la app\n'
+          '3. URL del servidor';
+      print('❌ ClientException: $e');
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    } on Exception catch (e) {
+      _errorMessage = 'Error de conexión: ${e.toString()}';
+      print('❌ Exception: $e');
+      _isLoading = false;
+      notifyListeners();
+      return false;
     } catch (e) {
-      _errorMessage = 'Error de conexión: $e';
+      _errorMessage = 'Error inesperado: $e';
+      print('❌ Error: $e');
       _isLoading = false;
       notifyListeners();
       return false;
@@ -84,26 +126,58 @@ class AuthService with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await http.post(
-        Uri.parse(registerEndpoint),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(request.toJson()),
-      );
+      print('🟣 Intentando registro a: $registerEndpoint');
+
+      final response = await http
+          .post(
+            Uri.parse(registerEndpoint),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(request.toJson()),
+          )
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () {
+              throw Exception(
+                'Tiempo de espera agotado. Verifica tu conexión a internet.',
+              );
+            },
+          );
+
+      print('🟣 Respuesta del servidor - Status: ${response.statusCode}');
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         _isLoading = false;
         _errorMessage = null;
         notifyListeners();
+        print('✅ Registro exitoso');
         return true;
       } else {
         final body = jsonDecode(response.body);
         _errorMessage = body['message'] ?? 'Error al registrar usuario';
+        print('❌ Error del servidor: $_errorMessage');
         _isLoading = false;
         notifyListeners();
         return false;
       }
+    } on http.ClientException catch (e) {
+      _errorMessage =
+          'No se puede conectar al servidor. Verifica:\n'
+          '1. Conexión a internet\n'
+          '2. Permisos de la app\n'
+          '3. URL del servidor';
+      print('❌ ClientException: $e');
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    } on Exception catch (e) {
+      _errorMessage = 'Error de conexión: ${e.toString()}';
+      print('❌ Exception: $e');
+      _isLoading = false;
+      notifyListeners();
+      return false;
     } catch (e) {
-      _errorMessage = 'Error de conexión: $e';
+      _errorMessage = 'Error inesperado: $e';
+      print('❌ Error: $e');
       _isLoading = false;
       notifyListeners();
       return false;

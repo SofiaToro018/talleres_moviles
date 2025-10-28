@@ -20,8 +20,8 @@ class StorageService {
 
   Future<Map<String, String>> getUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString('email') ?? 'Sin email';
-    final name = prefs.getString('name') ?? 'Sin nombre';
+    final email = prefs.getString('user_email') ?? 'Sin email';
+    final name = prefs.getString('user_name') ?? 'Sin nombre';
     return {'email': email, 'name': name};
   }
 }

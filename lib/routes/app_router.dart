@@ -15,13 +15,35 @@ import '../models/character_model.dart';
 
 import '../view/auth/login_screen.dart';
 import '../view/auth/register_screen.dart';
+import '../view/auth/splash_screen.dart';
 import '../view/profile/profile_screen.dart';
 
+import '../services/storage_service.dart';
+
 final GoRouter appRouter = GoRouter(
+  initialLocation: '/',
+  redirect: (context, state) async {
+    final storage = StorageService();
+    final token = await storage.getToken();
+    final isAuthenticated = token != null;
+
+    // Si intenta acceder a /profile sin estar autenticado → redirigir a /login
+    if (state.matchedLocation == '/profile' && !isAuthenticated) {
+      print('🔒 Acceso denegado a /profile - Redirigiendo a /login');
+      return '/login';
+    }
+
+    return null; // No hay redirección, continuar normalmente
+  },
   routes: [
+    // Ruta inicial - Splash que verifica autenticación
+    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+
+    // Ruta del home (antes era /)
     GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(), // Usa HomeView
+      path: '/home',
+      name: 'home',
+      builder: (context, state) => const HomeScreen(),
     ),
     // Rutas para el paso de parámetros
     GoRoute(

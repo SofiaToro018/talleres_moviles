@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flutter Web (Sin CORS)",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--web-browser-flag",
+        "--disable-web-security",
+        "--web-browser-flag",
+        "--user-data-dir=/tmp/flutter_chrome"
+      ]
+    },
+    {
+      "name": "Flutter (Modo Normal)",
+      "request": "launch",
+      "type": "dart"
+    }
+  ]
+}
