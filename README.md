@@ -79,7 +79,7 @@ POST /api/users
 Content-Type: application/json
 
 {
-  "name": "Laura Sofía",
+  "name": "SofiaTG",
   "email": "sofia.toro01@uceva.edu.co",
   "password": "password123"
 }
