@@ -29,11 +29,7 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.home),
             title: const Text('Inicio'),
             onTap: () {
-              //context.go('/'); // Navega a la ruta principal
-              //Reemplaza la ruta actual en la pila de navegación.
-              //No permite volver atrás automáticamente, ya que no agrega la nueva ruta a la pila.
-              //Útil para navegación sin historial, como en barra de navegación o cambiar de pestañas.
-              context.go('/'); // Navega a la ruta principal
+              context.go('/home'); // Navega al home
               Navigator.pop(context); // Cierra el drawer
             },
           ),
