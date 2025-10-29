@@ -249,8 +249,8 @@ redirect: (context, state) async {
 
 **Capturas:**
 
-| Login Screen ||Logs Login Screen |
-|:---:||:---:|
+| Login Screen |Logs Login Screen |
+|:---:|:---:|
 |![alt text](image-7.png)|![alt text](image-4.png)|
 
 ---
