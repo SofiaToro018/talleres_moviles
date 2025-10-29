@@ -254,8 +254,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 50,
                       child: ElevatedButton.icon(
                         onPressed: () async {
-                          await authService.logout();
-                          if (context.mounted) context.go('/login');
+                          // Mostrar diálogo de confirmación
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Cerrar sesión'),
+                              content: const Text(
+                                '¿Estás seguro de que deseas cerrar sesión?\n\n'
+                                'Se eliminarán:\n'
+                                '• Token de acceso\n'
+                                '• Nombre y email guardados\n'
+                                '• Datos de sesión',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: const Text('Cancelar'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red[600],
+                                  ),
+                                  child: const Text('Cerrar sesión'),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          // Si confirma, cerrar sesión
+                          if (confirm == true && context.mounted) {
+                            await authService.logout();
+
+                            // Mostrar mensaje de confirmación
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Sesión cerrada correctamente'),
+                                  backgroundColor: Colors.green,
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+
+                              // Redirigir al login
+                              context.go('/login');
+                            }
+                          }
                         },
                         icon: const Icon(Icons.logout),
                         label: const Text(

@@ -204,12 +204,31 @@ class AuthService with ChangeNotifier {
   /// 🔴 LOGOUT
   /// -----------------------------------------------------
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    await storage.deleteAll();
+    print('🔴 Cerrando sesión...');
 
-    _user = null;
-    _token = null;
-    notifyListeners();
+    try {
+      // Limpiar SharedPreferences (datos NO sensibles)
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      print('   ✅ SharedPreferences limpiado (user_name, user_email)');
+
+      // Limpiar FlutterSecureStorage (datos sensibles)
+      await storage.deleteAll();
+      print('   ✅ FlutterSecureStorage limpiado (access_token)');
+
+      // Limpiar variables en memoria
+      _user = null;
+      _token = null;
+      _errorMessage = null;
+
+      notifyListeners();
+      print('🔴 Sesión cerrada exitosamente');
+    } catch (e) {
+      print('❌ Error al cerrar sesión: $e');
+      // Aún así intentamos limpiar las variables
+      _user = null;
+      _token = null;
+      notifyListeners();
+    }
   }
 }
