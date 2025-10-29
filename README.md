@@ -1,5 +1,5 @@
 
-# � README – Taller Autenticación JWT y Almacenamiento Seguro
+# Taller Autenticación JWT y Almacenamiento Seguro
 
 **Autor:** Laura Sofía Toro García  
 **Fecha:** Octubre 2025  
