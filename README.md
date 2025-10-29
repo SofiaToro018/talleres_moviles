@@ -1,5 +1,5 @@
 
-# � README – Taller Autenticación JWT y Almacenamiento Seguro
+# Taller Autenticación JWT y Almacenamiento Seguro
 
 **Autor:** Laura Sofía Toro García  
 **Fecha:** Octubre 2025  
@@ -79,7 +79,7 @@ POST /api/users
 Content-Type: application/json
 
 {
-  "name": "Laura Sofía",
+  "name": "SofiaTG",
   "email": "sofia.toro01@uceva.edu.co",
   "password": "password123"
 }
@@ -249,8 +249,8 @@ redirect: (context, state) async {
 
 **Capturas:**
 
-| Login Screen ||Logs Login Screen |
-|:---:||:---:|
+| Login Screen |Logs Login Screen |
+|:---:|:---:|
 |![alt text](image-7.png)|![alt text](image-4.png)|
 
 ---
