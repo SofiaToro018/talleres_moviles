@@ -1,569 +1,276 @@
+# 📱 Taller Firebase - Gestión de Universidades
 
-# � README – Taller Autenticación JWT y Almacenamiento Seguro
+Aplicación móvil desarrollada en Flutter que implementa un CRUD completo de universidades con Firebase Firestore, permitiendo la gestión en tiempo real de información universitaria.
 
-**Autor:** Laura Sofía Toro García  
-**Fecha:** Octubre 2025  
-**Rama:** `feature/taller_jwt`
+## 🎯 Objetivo
 
----
-
-## 📘 Descripción General
-
-Este proyecto implementa un **sistema completo de autenticación JWT** consumiendo una API REST externa (`https://parking.visiontic.com.co`), con almacenamiento seguro de credenciales y gestión de sesión persistente usando Flutter.
-
-### 🎯 Objetivos Cumplidos
-
-✅ **Consumo de API REST con autenticación**  
-✅ **Registro de usuarios** (POST `/api/users`)  
-✅ **Login con credenciales** (POST `/api/login`)  
-✅ **Almacenamiento diferenciado:**
-- `shared_preferences`: datos NO sensibles (nombre, email)
-- `flutter_secure_storage`: datos sensibles (token JWT)
-
-✅ **Pantalla de perfil** con evidencia de datos almacenados  
-✅ **Guards de navegación** (protección de rutas autenticadas)  
-✅ **Splash screen** con verificación automática de sesión  
-✅ **Logout completo** con limpieza de datos  
+Implementar una aplicación que permita **Crear, Leer, Actualizar y Eliminar** (CRUD) información de universidades, almacenando los datos en Firebase Firestore con sincronización en tiempo real.
 
 ---
 
-## 🏗️ Arquitectura del Proyecto
+## 🏗️ Arquitectura
+
+### Patrón de Diseño
+La aplicación sigue una arquitectura **Model-Service-View**:
 
 ```
 lib/
-├── main.dart                         # Punto de entrada con Provider
-│
-├── routes/
-│   └── app_router.dart              # Rutas con guards de autenticación
-│
 ├── models/
-│   └── auth_models.dart             # LoginRequest, RegisterRequest, User
-│
+│   └── universidad_fb.dart          # Modelo de datos
 ├── services/
-│   ├── auth_service.dart            # Lógica de autenticación y HTTP
-│   └── storage_service.dart         # Gestión de almacenamiento local
-│
-├── view/
-│   ├── auth/
-│   │   ├── splash_screen.dart       # Verificación inicial de sesión
-│   │   ├── login_screen.dart        # Pantalla de inicio de sesión
-│   │   └── register_screen.dart     # Pantalla de registro
-│   │
-│   ├── profile/
-│   │   └── profile_screen.dart      # Evidencia de almacenamiento
-│   │
-│   └── home/
-│       └── home_screen.dart         # Pantalla principal
-│
-├── widgets/
-│   └── custom_drawer.dart           # Menú lateral de navegación
-│
-└── themes/
-    └── app_theme.dart               # Tema morado corporativo
+│   └── universidad_service.dart     # Lógica de negocio y Firebase
+├── views/
+│   └── firebase/
+│       ├── universidad_fb_list_view.dart   # Lista (Read)
+│       └── universidad_fb_form_view.dart   # Formulario (Create/Update)
+├── routes/
+│   └── app_router.dart              # Configuración de rutas
+└── widgets/
+    └── custom_drawer.dart           # Menú de navegación
 ```
+
+### Capas de la Aplicación
+
+1. **Model (Modelo)**: Define la estructura de datos de Universidad
+2. **Service (Servicio)**: Gestiona la comunicación con Firebase Firestore
+3. **View (Vista)**: Interfaces de usuario para listar y gestionar universidades
 
 ---
 
-## 🌐 API Consumida
+## 🔥 Conexión con Firebase
 
-### **Base URL**
-```
-https://parking.visiontic.com.co/api
-```
+### Configuración
 
-### **Endpoints Implementados**
-
-#### 1️⃣ **Registro de Usuario**
-```http
-POST /api/users
-Content-Type: application/json
-
-{
-  "name": "Laura Sofía",
-  "email": "sofia.toro01@uceva.edu.co",
-  "password": "password123"
-}
-```
-
-**Respuesta exitosa (201):**
-```json
-{
-  "success": true,
-  "message": "Usuario creado correctamente",
-  "data": {
-    "id": 39,
-    "name": "SofiaTG",
-    "email": "sofia.toro01@uceva.edu.co",
-    "created_at": "2025-10-28T23:23:13.000000Z",
-    "updated_at": "2025-10-28T23:23:13.000000Z"
-  }
-}
-```
-
----
-
-#### 2️⃣ **Login (Autenticación)**
-```http
-POST /api/login
-Content-Type: application/json
-
-{
-  "email": "sofia.toro01@uceva.edu.co",
-  "password": "password123"
-}
-```
-
-**Respuesta exitosa (200):**
-```json
-{
-  "success": true,
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-  "user": {
-    "id": 39,
-    "name": "SofiaTG",
-    "email": "sofia.toro01@uceva.edu.co"
-  }
-}
-```
-
----
-
-## 💾 Almacenamiento de Datos
-
-### **Estrategia de Seguridad Implementada**
-
-| Tipo de Dato | Almacenamiento | Motivo |
-|--------------|----------------|--------|
-| **Token JWT** | `flutter_secure_storage` | ✅ Sensible - Requiere encriptación |
-| **Nombre del usuario** | `shared_preferences` | ⚪ No sensible - Dato público |
-| **Email del usuario** | `shared_preferences` | ⚪ No sensible - Identificador público |
-
-### **Implementación en Código**
-
-#### **Al hacer Login (`auth_service.dart`):**
-```dart
-// 1. Guardar token en almacenamiento SEGURO
-await storage.write(key: 'access_token', value: token);
-
-// 2. Guardar datos NO sensibles en SharedPreferences
-final prefs = await SharedPreferences.getInstance();
-await prefs.setString('user_name', user.name);
-await prefs.setString('user_email', user.email);
-```
-
-#### **Al hacer Logout:**
-```dart
-// Limpiar SharedPreferences
-final prefs = await SharedPreferences.getInstance();
-await prefs.clear();  // Elimina: user_name, user_email
-
-// Limpiar FlutterSecureStorage
-await storage.deleteAll();  // Elimina: access_token
-```
-
----
-
-## 🔒 Sistema de Navegación y Guards
-
-### **Flujo de Autenticación**
-
-```
-App Inicia
-    ↓
-SplashScreen (/)
-    ↓
-¿Existe token en secure_storage?
-    ├─ SÍ → HomeScreen (/home)
-    └─ NO → LoginScreen (/login)
-         ↓
-    Usuario se autentica
-         ↓
-    ProfileScreen (/profile) ✅
-```
-
-### **Guard de Rutas (`app_router.dart`)**
-
-```dart
-redirect: (context, state) async {
-  final storage = StorageService();
-  final token = await storage.getToken();
-  final isAuthenticated = token != null;
-
-  // Proteger /profile
-  if (state.matchedLocation == '/profile' && !isAuthenticated) {
-    print('🔒 Acceso denegado - Redirigiendo a /login');
-    return '/login';
-  }
-
-  return null;
-},
-```
-
-**Rutas protegidas:**
-- `/profile` → Requiere token válido
-
-**Rutas públicas:**
-- `/login`, `/register`, `/home`
-
----
-
-## 📱 Pantallas Implementadas
-
-### **1. Splash Screen (Verificación Automática)**
-
-**Ubicación:** `lib/view/auth/splash_screen.dart`
-
-**Funcionalidad:**
-- ✅ Verifica si existe token en `flutter_secure_storage`
-- ✅ Si hay token → redirige a `/home`
-- ✅ Si NO hay token → redirige a `/login`
-- ✅ Muestra logo corporativo y loading
-
-**Captura:**
-
-| Splash Screen |
-|:---:|
-| ![Splash Screen](image-3.png) |
-
----
-
-### **2. Login Screen**
-
-**Ubicación:** `lib/view/auth/login_screen.dart`
-
-**Características:**
-- ✅ Card centrada con diseño moderno
-- ✅ Campos: Email, Password
-- ✅ Validación de credenciales
-- ✅ Manejo de errores con mensajes claros
-- ✅ Redirección automática a `/profile` tras login exitoso
-- ✅ Enlace a registro
-
-**Logs de consola esperados:**
-```
-🔵 Intentando login a: https://parking.visiontic.com.co/api/login
-🔵 Respuesta del servidor - Status: 200
-🔵 Datos recibidos: {success: true, token: eyJ0..., user: {...}}
-✅ Login exitoso - Usuario: SofiaTG, Email: sofia.toro01@uceva.edu.co
-```
-
-**Capturas:**
-
-| Login Screen ||Logs Login Screen |
-|:---:||:---:|
-|![alt text](image-7.png)|![alt text](image-4.png)|
-
----
-
-### **3. Register Screen**
-
-**Ubicación:** `lib/view/auth/register_screen.dart`
-
-**Características:**
-- ✅ Card centrada con diseño moderno
-- ✅ Campos: Nombre, Email, Password
-- ✅ Validación de campos
-- ✅ Manejo de errores (email duplicado, etc.)
-- ✅ Redirección automática a `/login` tras registro exitoso
-- ✅ Enlace a login
-
-**Logs de consola esperados:**
-```
-🟣 Intentando registro a: https://parking.visiontic.com.co/api/users
-🟣 Respuesta del servidor - Status: 201
-✅ Registro exitoso
-```
-
-**Capturas:**
-
-|Register Screen|Logs Register Screen | 
-|:---:|:---:|
-| ![alt text](image-8.png)|![alt text](image-5.png)|
-
----
-
-### **4. Profile Screen (Evidencia de Almacenamiento)**
-
-**Ubicación:** `lib/view/profile/profile_screen.dart`
-
-**Funcionalidad:**
-- ✅ Muestra datos del usuario desde `shared_preferences`:
-  - Nombre
-  - Email
-- ✅ Muestra estado del token desde `flutter_secure_storage`:
-  - ✅ "Token presente" (verde) si existe
-  - ❌ "Sin token" (rojo) si no existe
-- ✅ Botón "Cerrar sesión" con diálogo de confirmación
-- ✅ Drawer de navegación disponible
-
-**Logs de consola esperados:**
-```
-📱 Datos cargados en ProfileScreen:
-   Nombre: Laura Sofía
-   Email: sofia.toro01@uceva.edu.co
-   Token presente: true
-```
-
-**Al cerrar sesión:**
-```
-🔴 Cerrando sesión...
-   ✅ SharedPreferences limpiado (user_name, user_email)
-   ✅ FlutterSecureStorage limpiado (access_token)
-🔴 Sesión cerrada exitosamente
-```
-
-**Capturas:**
-
-| Profile | Cerrar Sesión | Logs Sesión - Sesión Cerrada | 
-|:---:|:---:|:---:|
-| ![alt text](image-9.png)|![alt text](image-10.png)|![alt text](image-6.png)|
-
----
-
-## 🎨 Diseño y UX
-
-### **Tema Visual**
-
-- **Colores principales:**
-  - Primary: `#6A0DAD` (Morado oscuro)
-  - Secondary: `#9C27B0` (Morado intermedio)
-  - Accent: `#E1BEE7` (Lavanda)
-
-- **Componentes:**
-  - Cards con sombras y bordes redondeados (24px)
-  - Gradientes sutiles en fondos
-  - Icons circulares con gradiente
-  - Botones con elevación y transiciones
-
-### **Consistencia Visual**
-
-✅ AppBar con gradiente en todas las pantallas autenticadas  
-✅ Cards centradas con diseño moderno  
-✅ TextField con bordes redondeados y focus states  
-✅ Botones de ancho completo con íconos  
-✅ Diálogos de confirmación con acciones claras  
-
----
-
-## 🛠️ Tecnologías y Paquetes
-
-### **Dependencias Principales**
-
+#### 1. Dependencias en `pubspec.yaml`
 ```yaml
 dependencies:
-  flutter:
-    sdk: flutter
-  
-  # Navegación
-  go_router: ^16.2.4
-  
-  # HTTP
-  http: ^1.5.0
-  
-  # Almacenamiento
-  shared_preferences: ^2.2.2      # NO sensible
-  flutter_secure_storage: ^9.0.0  # Sensible (tokens)
-  
-  # State Management
-  provider: ^6.1.1
-  
-  # Utilidades
-  flutter_dotenv: ^5.1.0
+  firebase_core: ^4.2.0
+  cloud_firestore: ^6.0.3
 ```
+
+#### 2. Inicialización de Firebase
+```dart
+// lib/main.dart
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
+  runApp(const MyApp());
+}
+```
+
+### Colección en Firestore
+
+**Nombre de la colección**: `universidades`
+
+**Estructura de documentos**:
+```javascript
+{
+  "id": "string",           // ID autogenerado
+  "nit": "string",          // NIT único (validado)
+  "nombre": "string",       // Nombre de la universidad
+  "direccion": "string",    // Dirección física
+  "telefono": "string",     // Número de contacto
+  "paginaWeb": "string"     // URL del sitio web (validada)
+}
+```
+
+---
+
+## ✨ Funcionalidades Implementadas
+
+### 1. **Create (Crear)**
+- Formulario con validación de campos
+- Validación de NIT único en Firestore
+- Validación de formato URL para página web
+- Campos obligatorios: NIT y nombre
+
+**Captura - Formulario de Creación**:
+<!-- Insertar captura del formulario aquí -->
+
+---
+
+### 2. **Read (Listar)**
+- Lista en tiempo real con `StreamBuilder`
+- Sincronización automática con Firebase
+- Diseño responsive (Grid/Lista según dispositivo)
+- Estado vacío con mensaje informativo
+
+**Captura - Lista de Universidades**:
+<!-- Insertar captura de la lista aquí -->
+
+---
+
+### 3. **Update (Actualizar)**
+- Edición de universidades existentes
+- Pre-carga de datos en el formulario
+- Validación al actualizar (excepto NIT)
+
+**Captura - Edición de Universidad**:
+<!-- Insertar captura del formulario de edición aquí -->
+
+---
+
+### 4. **Delete (Eliminar)**
+- Diálogo de confirmación antes de eliminar
+- Vista previa de los datos a eliminar
+- Feedback visual con SnackBar
+
+**Captura - Diálogo de Confirmación**:
+<!-- Insertar captura del diálogo aquí -->
+
+---
+
+## 🔍 Validaciones Implementadas
+
+### Validación de Campos
+```dart
+// 1. Campos obligatorios
+validator: (value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'El nombre es obligatorio';
+  }
+  return null;
+}
+
+// 2. Validación de URL
+validator: (value) {
+  if (value != null && value.isNotEmpty) {
+    final urlRegex = RegExp(
+      r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b',
+    );
+    if (!urlRegex.hasMatch(value)) {
+      return 'Ingresa una URL válida';
+    }
+  }
+  return null;
+}
+
+// 3. Validación de NIT único
+Future<bool> existeNit(String nit, [String? universidadId]) async {
+  final query = await _ref.where('nit', isEqualTo: nit).get();
+  
+  if (query.docs.isEmpty) return false;
+  
+  if (universidadId != null) {
+    return query.docs.any((doc) => doc.id != universidadId);
+  }
+  
+  return true;
+}
+```
+
+---
+
+## 📊 Vista de Evidencia - Base de Datos en Vivo
+
+La aplicación muestra datos en **tiempo real** utilizando `StreamBuilder`:
+
+```dart
+StreamBuilder<List<UniversidadFb>>(
+  stream: UniversidadService.watchUniversidades(),
+  builder: (context, snapshot) {
+    // Actualización automática cuando cambia la BD
+    final universidades = snapshot.data ?? [];
+    return ListView.builder(
+      itemCount: universidades.length,
+      itemBuilder: (context, index) => UniversidadCard(...),
+    );
+  },
+)
+```
+
+**Captura - Firebase Console (Firestore)**:
+<!-- Insertar captura de Firebase Console mostrando la colección 'universidades' aquí -->
+
+**Captura - Sincronización en Tiempo Real**:
+<!-- Insertar captura mostrando cambios en tiempo real en la app aquí -->
 
 ---
 
 ## 🚀 Cómo Ejecutar el Proyecto
 
-### **Requisitos Previos**
-- Flutter SDK 3.x
-- Dart 3.x
-- Conexión a internet
+### Requisitos Previos
+- Flutter SDK (^3.9.2)
+- Dart SDK
+- Cuenta de Firebase
+- Editor: VS Code / Android Studio
 
-### **Instalación**
+### Pasos de Instalación
 
-1. **Clonar el repositorio y cambiar a la rama:**
+1. **Clonar el repositorio**
 ```bash
 git clone https://github.com/SofiaToro018/talleres_moviles.git
 cd talleres_moviles
-git checkout feature/taller_jwt
 ```
 
-2. **Instalar dependencias:**
+2. **Instalar dependencias**
 ```bash
 flutter pub get
 ```
 
-3. **Ejecutar en Web (con solución CORS para desarrollo):**
+3. **Configurar Firebase** (si no está configurado)
 ```bash
-flutter run -d chrome --web-browser-flag "--disable-web-security" --web-browser-flag "--user-data-dir=C:\temp\chrome_dev"
+# Instalar FlutterFire CLI
+dart pub global activate flutterfire_cli
+
+# Configurar Firebase
+flutterfire configure
 ```
 
-4. **O ejecutar en Android (sin problemas de CORS):**
+4. **Ejecutar la aplicación**
 ```bash
 flutter run
-# Seleccionar dispositivo Android conectado
 ```
 
 ---
 
-## 🧪 Flujo de Pruebas
+## 📦 Dependencias Principales
 
-### **Caso 1: Registro y Login**
-1. Abrir la app → ver Splash → redirigir a Login
-2. Ir a Registro
-3. Ingresar datos: nombre, email, password
-4. Verificar registro exitoso → redirigir a Login
-5. Ingresar credenciales
-6. Verificar login exitoso → redirigir a Profile
-7. Ver datos en Profile (nombre, email, token ✅)
-
-### **Caso 2: Persistencia de Sesión**
-1. Hacer login
-2. Cerrar la app completamente
-3. Abrir la app nuevamente
-4. Verificar que abre directamente en Home (sesión persistente)
-
-### **Caso 3: Protección de Rutas**
-1. Sin hacer login, intentar navegar a `/profile` desde URL
-2. Verificar redirección automática a `/login`
-3. Ver log en consola: `🔒 Acceso denegado`
-
-### **Caso 4: Logout Completo**
-1. Desde Profile, clic en "Cerrar sesión"
-2. Confirmar en diálogo
-3. Verificar logs de limpieza en consola
-4. Verificar redirección a Login
-5. Intentar volver a Profile → debe redirigir a Login
+| Paquete | Versión | Uso |
+|---------|---------|-----|
+| `firebase_core` | ^4.2.0 | Inicialización de Firebase |
+| `cloud_firestore` | ^6.0.3 | Base de datos en tiempo real |
+| `go_router` | ^16.2.4 | Navegación |
+| `provider` | ^6.1.1 | Gestión de estado |
 
 ---
 
-## 🔍 Detalles Técnicos de Implementación
+## 🎨 Características Adicionales
 
-### **1. Manejo de Errores HTTP**
-
-```dart
-try {
-  final response = await http.post(
-    Uri.parse(loginEndpoint),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode(request.toJson()),
-  ).timeout(const Duration(seconds: 15));
-
-  if (response.statusCode == 200) {
-    // Procesar respuesta exitosa
-  } else {
-    // Manejar errores del servidor
-  }
-} on http.ClientException catch (e) {
-  // Error de conexión
-} catch (e) {
-  // Error inesperado
-}
-```
-
-### **2. State Management con Provider**
-
-```dart
-// En main.dart
-MultiProvider(
-  providers: [
-    ChangeNotifierProvider(create: (_) => AuthService())
-  ],
-  child: const MyApp(),
-)
-
-// En las pantallas
-final authService = Provider.of<AuthService>(context);
-```
-
-### **3. Lectura de Datos Almacenados**
-
-```dart
-// Desde shared_preferences
-final prefs = await SharedPreferences.getInstance();
-final name = prefs.getString('user_name');
-final email = prefs.getString('user_email');
-
-// Desde flutter_secure_storage
-final token = await storage.read(key: 'access_token');
-```
-
----
-
-## 📊 Comparativa: Antes vs Después
-
-| Aspecto | Antes (rama main) | Después (feature/taller_jwt) |
-|---------|-------------------|------------------------------|
-| Autenticación | ❌ No implementada | ✅ JWT completo |
-| Almacenamiento seguro | ❌ No existe | ✅ Diferenciado (secure/shared) |
-| Guards de rutas | ❌ No protegidas | ✅ Rutas protegidas |
-| Splash screen | ❌ No existe | ✅ Con verificación de sesión |
-| Persistencia de sesión | ❌ No existe | ✅ Automática |
-| Logout | ❌ No existe | ✅ Con limpieza completa |
-
----
-
-## 🐛 Resolución de Problemas Comunes
-
-### **Problema: CORS en Web**
-**Solución:** Usar el comando con flags de Chrome o ejecutar en Android.
-
-### **Problema: "No se puede conectar al servidor"**
-**Solución:** Verificar:
-1. Conexión a internet
-2. Permisos en AndroidManifest.xml
-3. Servidor está disponible: `curl https://parking.visiontic.com.co/api/users`
-
-### **Problema: Datos no aparecen en Profile**
-**Solución:** Verificar logs en consola:
-- ¿Login fue exitoso?
-- ¿Se guardaron los datos?
-- ¿Profile está leyendo las claves correctas?
-
----
-
-## 📚 Recursos Adicionales
-
-- [Documentación oficial de go_router](https://pub.dev/packages/go_router)
-- [Flutter Secure Storage](https://pub.dev/packages/flutter_secure_storage)
-- [Shared Preferences](https://pub.dev/packages/shared_preferences)
-- [HTTP Package](https://pub.dev/packages/http)
-
----
-
-## ✅ Checklist de Cumplimiento
-
-- [x] Consumo de API REST con POST requests
-- [x] Registro de usuarios funcional
-- [x] Login con credenciales
-- [x] Almacenamiento diferenciado (secure vs shared)
-- [x] Token JWT guardado de forma segura
-- [x] Datos NO sensibles en shared_preferences
-- [x] Pantalla de perfil con evidencia de almacenamiento
-- [x] Estado de sesión visible (token presente/ausente)
-- [x] Botón de logout funcional
-- [x] Limpieza completa de datos al cerrar sesión
-- [x] Guards de navegación (protección de rutas)
-- [x] Splash screen con verificación de sesión
-- [x] Redirección automática según autenticación
-- [x] Manejo de errores HTTP con mensajes claros
-- [x] Logs detallados en consola para debugging
-- [x] Diseño moderno y consistente
-- [x] Drawer de navegación en todas las pantallas autenticadas
+- ✅ **Diseño Material Design 3** con gradientes personalizados
+- ✅ **Responsive Design** (Móvil, Tablet, Desktop)
+- ✅ **Animaciones** en botones y transiciones
+- ✅ **Loading States** durante operaciones asíncronas
+- ✅ **Error Handling** con mensajes descriptivos
+- ✅ **Empty States** con iconografía clara
 
 ---
 
 ## 👥 Autor
 
-**Laura Sofía Toro García**  
-Universidad: UCEVA  
-Semestre: 7 – Electiva Profesional I  
-Email: laura.toro@uceva.edu.co
-
+**Laura Sofía Toro**
+- GitHub: [@SofiaToro018](https://github.com/SofiaToro018)
+- Proyecto: Electiva Profesional I - 7° Semestre
+- Rama: feature/taller_firebase_universidades
 ---
 
-*Documentación completada: Octubre 2025*
+## 📸 Galería de Capturas
 
+### Vista Principal
+<!-- Insertar captura aquí -->
 
+### Formulario de Registro
+<!-- Insertar captura aquí -->
 
+### Base de Datos Firestore
+<!-- Insertar captura aquí -->
+
+### Sincronización en Tiempo Real
+<!-- Insertar captura aquí -->
