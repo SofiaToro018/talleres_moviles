@@ -18,6 +18,9 @@ import '../view/auth/register_screen.dart';
 import '../view/auth/splash_screen.dart';
 import '../view/profile/profile_screen.dart';
 
+import '../view/firebase/universidad_fb_list_view.dart';
+import '../view/firebase/universidad_fb_form_view.dart';
+
 import '../services/storage_service.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -123,6 +126,31 @@ final GoRouter appRouter = GoRouter(
       path: '/profile',
       name: 'profile',
       builder: (context, state) => const ProfileScreen(),
+    ),
+
+    // ========== RUTAS FIREBASE - UNIVERSIDADES ==========
+    // Listado de universidades
+    GoRoute(
+      path: '/universidadesfb',
+      name: 'universidadesfb',
+      builder: (context, state) => const UniversidadFbListView(),
+    ),
+
+    // Crear nueva universidad
+    GoRoute(
+      path: '/universidadesfb/create',
+      name: 'universidadesfb_create',
+      builder: (context, state) => const UniversidadFbFormView(),
+    ),
+
+    // Editar universidad existente
+    GoRoute(
+      path: '/universidadesfb/edit/:id',
+      name: 'universidadesfb_edit',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return UniversidadFbFormView(id: id);
+      },
     ),
   ],
 );
