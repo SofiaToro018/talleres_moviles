@@ -15,32 +15,38 @@ import '../models/character_model.dart';
 
 import '../view/auth/login_screen.dart';
 import '../view/auth/register_screen.dart';
-import '../view/auth/splash_screen.dart';
+// import '../view/auth/splash_screen.dart'; // Comentado - no se usa en esta rama
 import '../view/profile/profile_screen.dart';
 
 import '../view/firebase/universidad_fb_list_view.dart';
 import '../view/firebase/universidad_fb_form_view.dart';
 
-import '../services/storage_service.dart';
+// import '../services/storage_service.dart'; // Comentado - no se usa en esta rama
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/',
-  redirect: (context, state) async {
-    final storage = StorageService();
-    final token = await storage.getToken();
-    final isAuthenticated = token != null;
+  // ========== RUTA INICIAL: UNIVERSIDADES ==========
+  initialLocation: '/universidadesfb',
 
-    // Si intenta acceder a /profile sin estar autenticado → redirigir a /login
-    if (state.matchedLocation == '/profile' && !isAuthenticated) {
-      print('🔒 Acceso denegado a /profile - Redirigiendo a /login');
-      return '/login';
-    }
+  // Comentado temporalmente para enfocarnos en Firebase/Universidades
+  // redirect: (context, state) async {
+  //   final storage = StorageService();
+  //   final token = await storage.getToken();
+  //   final isAuthenticated = token != null;
 
-    return null; // No hay redirección, continuar normalmente
-  },
+  //   // Si intenta acceder a /profile sin estar autenticado → redirigir a /login
+  //   if (state.matchedLocation == '/profile' && !isAuthenticated) {
+  //     print('🔒 Acceso denegado a /profile - Redirigiendo a /login');
+  //     return '/login';
+  //   }
+
+  //   return null; // No hay redirección, continuar normalmente
+  // },
   routes: [
-    // Ruta inicial - Splash que verifica autenticación
-    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+    // Ruta inicial - Splash (comentada, ahora inicia en universidades)
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const UniversidadFbListView(),
+    ),
 
     // Ruta del home (antes era /)
     GoRoute(
