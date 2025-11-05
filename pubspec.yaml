@@ -37,7 +37,9 @@ dependencies:
   go_router: ^16.2.4
   http: ^1.5.0
   flutter_dotenv: ^6.0.0
+# Firebase
   firebase_core: ^4.2.0
+  cloud_firestore: 6.0.3
 
 # Almacenamiento
   shared_preferences: ^2.2.2       # Datos NO sensibles
