@@ -77,7 +77,7 @@ Future<void> main() async {
   "nombre": "string",       // Nombre de la universidad
   "direccion": "string",    // Dirección física
   "telefono": "string",     // Número de contacto
-  "paginaWeb": "string"     // URL del sitio web (validada)
+  "pagina_web": "string"     // URL del sitio web (validada)
 }
 ```
 
@@ -85,46 +85,58 @@ Future<void> main() async {
 
 ## ✨ Funcionalidades Implementadas
 
-### 1. **Create (Crear)**
+### 1. **Read (Listar) - Vista Principal**
+- Lista en tiempo real con `StreamBuilder`
+- Sincronización automática con Firebase
+- Diseño responsive con gradiente personalizado
+- Cards con información completa (NIT, dirección, teléfono, web)
+
+**📸 Captura 1 - UI Lista de Universidades Creadas**:
+
+![lista](<listUni.png>)
+---
+
+### 2. **Create (Crear) - Formulario de Registro**
 - Formulario con validación de campos
 - Validación de NIT único en Firestore
 - Validación de formato URL para página web
 - Campos obligatorios: NIT y nombre
+- Diseño en dos secciones: Información Básica y Contacto
 
-**Captura - Formulario de Creación**:
-<!-- Insertar captura del formulario aquí -->
-
----
-
-### 2. **Read (Listar)**
-- Lista en tiempo real con `StreamBuilder`
-- Sincronización automática con Firebase
-- Diseño responsive (Grid/Lista según dispositivo)
-- Estado vacío con mensaje informativo
-
-**Captura - Lista de Universidades**:
-<!-- Insertar captura de la lista aquí -->
+**📸 Captura 2 - Vista del Formulario**:
+![crear form](<formUni.png>)
 
 ---
 
-### 3. **Update (Actualizar)**
-- Edición de universidades existentes
-- Pre-carga de datos en el formulario
-- Validación al actualizar (excepto NIT)
+### 3. **Validaciones de Campos**
+- Validación de campos no vacíos
+- Mensajes de error descriptivos
+- Validación en tiempo real al escribir
+- Bloqueo de envío si hay errores
 
-**Captura - Edición de Universidad**:
-<!-- Insertar captura del formulario de edición aquí -->
+**📸 Captura 3 - Validación de Campos No Vacíos**:
+![Campos Vacios](<CVacios.png>)
+---
+
+### 4. **Persistencia en Firebase - Datos Guardados**
+- Guardado exitoso en Firestore
+- Estructura de datos completa
+- ID autogenerado por Firebase
+- Sincronización inmediata con la app
+
+**📸 Captura 4 - Base de Datos Firebase (Universidad Creada)**:
+![Firebase](<Bd.png>)
 
 ---
 
-### 4. **Delete (Eliminar)**
+### 5. **Delete (Eliminar) - Confirmación**
 - Diálogo de confirmación antes de eliminar
 - Vista previa de los datos a eliminar
-- Feedback visual con SnackBar
+- Botones de cancelar/confirmar
+- Prevención de eliminaciones accidentales
 
-**Captura - Diálogo de Confirmación**:
-<!-- Insertar captura del diálogo aquí -->
-
+**📸 Captura 5 - Mensaje de Confirmación de Eliminación**:
+![Eliminar universidad](<eliminar.png>)
 ---
 
 ## 🔍 Validaciones Implementadas
@@ -168,9 +180,9 @@ Future<bool> existeNit(String nit, [String? universidadId]) async {
 
 ---
 
-## 📊 Vista de Evidencia - Base de Datos en Vivo
+## 📊 Sincronización en Tiempo Real
 
-La aplicación muestra datos en **tiempo real** utilizando `StreamBuilder`:
+La aplicación utiliza **StreamBuilder** para mantener los datos sincronizados automáticamente con Firebase Firestore:
 
 ```dart
 StreamBuilder<List<UniversidadFb>>(
@@ -186,11 +198,11 @@ StreamBuilder<List<UniversidadFb>>(
 )
 ```
 
-**Captura - Firebase Console (Firestore)**:
-<!-- Insertar captura de Firebase Console mostrando la colección 'universidades' aquí -->
-
-**Captura - Sincronización en Tiempo Real**:
-<!-- Insertar captura mostrando cambios en tiempo real en la app aquí -->
+**Ventajas de la sincronización en tiempo real:**
+- ✅ Los cambios en Firebase se reflejan instantáneamente en la app
+- ✅ Múltiples dispositivos pueden ver los mismos datos actualizados
+- ✅ No requiere recargar manualmente la lista
+- ✅ Experiencia de usuario fluida y moderna
 
 ---
 
@@ -259,18 +271,14 @@ flutter run
 - GitHub: [@SofiaToro018](https://github.com/SofiaToro018)
 - Proyecto: Electiva Profesional I - 7° Semestre
 - Rama: feature/taller_firebase_universidades
+
 ---
 
-## 📸 Galería de Capturas
+## Notas Finales
 
-### Vista Principal
-<!-- Insertar captura aquí -->
-
-### Formulario de Registro
-<!-- Insertar captura aquí -->
-
-### Base de Datos Firestore
-<!-- Insertar captura aquí -->
-
-### Sincronización en Tiempo Real
-<!-- Insertar captura aquí -->
+Este proyecto demuestra la implementación completa de un CRUD con Firebase Firestore, incluyendo:
+- ✅ Sincronización en tiempo real
+- ✅ Validaciones robustas de datos
+- ✅ Diseño responsive y moderno
+- ✅ Manejo de estados y errores
+- ✅ Arquitectura escalable y mantenible
