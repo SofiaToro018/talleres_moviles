@@ -96,6 +96,15 @@ class CustomDrawer extends StatelessWidget {
               Navigator.pop(context); // Cierra el drawer
             },
           ),
+          // FIREBASE - Universidades
+          ListTile(
+            leading: const Icon(Icons.school),
+            title: const Text('Universidades Firebase'),
+            onTap: () {
+              context.go('/universidadesfb');
+              Navigator.pop(context);
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.person),
             title: const Text('Perfil'),
